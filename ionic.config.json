@@ -1,0 +1,7 @@
+{
+  "name": "rh-listas-presencas",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
