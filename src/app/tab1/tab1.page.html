@@ -1,8 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+    <ion-title> Tab 1 </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,5 +11,13 @@
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <po-page-list id="container" p-title="Heroes">
+    <po-table
+      [p-columns]="[{ property: 'id' }, { property: 'name' }]"
+      p-service-api="https://po-sample-api.onrender.com/v1/heroes"
+      [p-height]="500"
+      [p-hide-table-search]="true"
+      [p-hide-columns-manager]="true"
+    ></po-table
+  ></po-page-list>
 </ion-content>

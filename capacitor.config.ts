@@ -1,12 +1,14 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'rh.listas.presencas',
   appName: 'rh-listas-presencas',
-  webDir: 'www',
+  webDir: 'www/browser',
   server: {
-    androidScheme: 'https'
-  }
+    androidScheme: 'https',
+    cleartext: true,
+    hostname: 'siaadesv.cambuhy.com.br',
+  },
 };
 
 export default config;

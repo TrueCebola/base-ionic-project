@@ -1,17 +1,49 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
+    <ion-title> Tab 2 </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content class="ion-padding" [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Tab 2</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <ion-button expand="full" (click)="loadHomePage()"
+    >Buscar informações</ion-button
+  >
+  <ion-button expand="full" color="danger" (click)="clear()"
+    >Apagar informações</ion-button
+  >
+
+  <ion-card>
+    @if (loading) {
+    <ion-card-header>
+      <ion-card-title>
+        <ion-skeleton-text
+          [animated]="true"
+          style="width: 120px"
+        ></ion-skeleton-text>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><ion-skeleton-text [animated]="true"></ion-skeleton-text></p>
+      <p><ion-skeleton-text [animated]="true"></ion-skeleton-text></p>
+    </ion-card-content>
+    } @else if (conference) {
+    <ion-card-header>
+      <ion-card-title> {{ conference.title }} </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>{{ conference.description }}</p>
+      <p>{{ conference.location }}</p>
+    </ion-card-content>
+    } @else {
+    <ion-card-content>
+      Conferência {{conference}} não encontrada ou é indefinida
+    </ion-card-content>
+    }
+  </ion-card>
 </ion-content>
