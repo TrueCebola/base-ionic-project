@@ -1,5 +1,5 @@
 {
-  "name": "rh-listas-presencas",
+  "name": "base-ionic-project",
   "version": "0.0.1",
   "author": "Carlos Torrichelli",
   "homepage": "https://siaa.cambuhy.com.br:5000/",
@@ -31,9 +31,9 @@
     "@capacitor/splash-screen": "5.0.7",
     "@capacitor/status-bar": "5.0.7",
     "@ionic/angular": "^7.7.3",
-    "@po-ui/ng-components": "^17.1.0",
+    "@po-ui/ng-components": "^17.3.0",
     "@po-ui/ng-sync": "^17.1.0",
-    "@po-ui/ng-templates": "^17.1.0",
+    "@po-ui/ng-templates": "^17.3.0",
     "ionicons": "^7.2.1",
     "rxjs": "~7.8.1",
     "tslib": "^2.6.2",
