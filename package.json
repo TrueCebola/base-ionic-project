@@ -35,6 +35,7 @@
     "@po-ui/ng-sync": "^17.1.0",
     "@po-ui/ng-templates": "^17.3.0",
     "ionicons": "^7.2.1",
+    "jwt-decode": "^4.0.0",
     "rxjs": "~7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "~0.14.4"

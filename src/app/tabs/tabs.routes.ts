@@ -1,10 +1,12 @@
 import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
+import { userAuthGuard } from '../auth/services/guards/user.auth.guard';
 
 export const routes: Routes = [
   {
     path: 'tabs',
     component: TabsPage,
+    canActivate: [userAuthGuard],
     children: [
       {
         path: 'tab1',

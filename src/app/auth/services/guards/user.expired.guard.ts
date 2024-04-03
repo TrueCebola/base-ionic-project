@@ -1,5 +1,13 @@
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
+import { StorageService } from '../storage.service';
+import { inject } from '@angular/core';
 
 export const userExpiredGuard: CanActivateFn = (route, state) => {
-  return true;
+  const STORAGE = inject(StorageService);
+  const ROUTER = inject(Router);
+  if (STORAGE.isExpired()) {
+    return true;
+  }
+  ROUTER.navigate(['/']);
+  return false;
 };

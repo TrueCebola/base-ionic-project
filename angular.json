@@ -34,9 +34,16 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@totvs/po-theme/images",
+                "output": "assets/images"
               }
             ],
             "styles": [
+              "node_modules/@totvs/po-theme/css/po-theme-default-variables.min.css",
+              "node_modules/@totvs/po-theme/css/po-theme-default.min.css",
               "./node_modules/@po-ui/style/css/po-theme-default.min.css",
               "src/global.scss",
               "src/theme/variables.scss"
