@@ -22,6 +22,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { StorageService } from '../services/storage.service';
 import { AES } from 'crypto-js';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -47,7 +48,7 @@ export class LoginPage implements OnInit {
     private notification: PoNotificationService
   ) {}
 
-  private readonly _encrytion_key = '¨8ryO&uxks#VUSLSA0XH?SWL7Rj4!y1w';
+  private readonly _encrytion_key = environment.encryption_key;
   api_url = window.location.href.split('/');
   authType = PoPageLoginAuthenticationType.Bearer;
   authUrl = `${window.location.origin}/api/auth/signin`;
