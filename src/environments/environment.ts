@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiUrl: 'https://siaadesv.cambuhy.com.br:5000/api',
+  encryption_key: '¨8ryO&uxks#VUSLSA0XH?SWL7Rj4!y1w',
 };
 
 /*

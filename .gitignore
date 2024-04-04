@@ -67,9 +67,5 @@ testem.log
 Thumbs.db
 
 # Company Info
-src/environments
-.src/environments
-/src/environments
-./src/environments
 src/environments/environment.prod.ts
 src/environments/environment.ts
