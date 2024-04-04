@@ -1,13 +1,8 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>senha-expirada</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">senha-expirada</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <po-page-blocked-user
+    [p-params]="params"
+    [p-reason]="reason"
+    [p-logo]="logo"
+    [p-url-back]="url"
+  ></po-page-blocked-user>
 </ion-content>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 const TOKEN = '';
 
@@ -12,13 +13,13 @@ const httpOptions = {
   providedIn: 'root',
 })
 export class AuthService {
-  auth_api = `${window.location.origin}/api/auth/`;
+  auth_api = `${environment.apiUrl}/auth`;
 
   constructor(private http: HttpClient) {}
 
   login(username: string, password: string): Observable<any> {
     return this.http.post(
-      `${this.auth_api}signin`,
+      `${this.auth_api}/signin`,
       {
         username,
         password,
@@ -28,6 +29,6 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http.post(`${this.auth_api}signout`, {}, httpOptions);
+    return this.http.post(`${this.auth_api}/signout`, {}, httpOptions);
   }
 }

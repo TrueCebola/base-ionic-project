@@ -6,7 +6,7 @@ export const userNotAuthGuard: CanActivateFn = (route, state) => {
   const STORAGE = inject(StorageService);
   const ROUTER = inject(Router);
   if (STORAGE.isLoggedIn()) {
-    ROUTER.navigate(['auth/login']);
+    ROUTER.navigate(['tabs/tab1']);
     return false;
   }
   return true;

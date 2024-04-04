@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -13,7 +13,11 @@ import {
   PoPageLoginLiterals,
   PoPageLoginModule,
 } from '@po-ui/ng-templates';
-import { PoLanguage } from '@po-ui/ng-components';
+import {
+  PoLanguage,
+  PoModule,
+  PoNotificationService,
+} from '@po-ui/ng-components';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { StorageService } from '../services/storage.service';
@@ -30,6 +34,7 @@ import { AES } from 'crypto-js';
     IonTitle,
     IonToolbar,
     CommonModule,
+    PoModule,
     FormsModule,
     PoPageLoginModule,
   ],
@@ -38,7 +43,8 @@ export class LoginPage implements OnInit {
   constructor(
     private authService: AuthService,
     private storageService: StorageService,
-    private router: Router
+    private router: Router,
+    private notification: PoNotificationService
   ) {}
 
   private readonly _encrytion_key = '¨8ryO&uxks#VUSLSA0XH?SWL7Rj4!y1w';
@@ -116,15 +122,17 @@ export class LoginPage implements OnInit {
     ).toString();
     const SAVE_LOGIN = data.rememberUser;
     this.isLoading = true;
-
     this.authService.login(CRYPT_USER, CRYPT_PWD).subscribe({
       next: (data) => {
         this.storageService.saveUser(data);
         this.isLoggedIn = true;
         this.isLoginFailed = false;
-        this.reloadPage();
+        // this.reloadPage();
         this.buttonDisabled = true;
-        this.isLoading = false;
+        this.notification.success('Login efetuado com sucesso!');
+        setTimeout(() => {
+          this.router.navigate(['tabs/tab1']);
+        }, 1000);
         return;
       },
       error: (err) => {
@@ -132,9 +140,14 @@ export class LoginPage implements OnInit {
           case 423:
             this.isExpired = true;
             this.storageService.setExpired(true);
-            this.router.navigate(['/login/senha-expirada']);
+            this.router.navigate(['auth/senha-expirada']);
             this.isLoginFailed = true;
             this.isLoading = false;
+            break;
+          case 401:
+            this.isLoginFailed = true;
+            this.isLoading = false;
+            this.notification.error(err.error);
             break;
           default:
             this.isExpired = false;
