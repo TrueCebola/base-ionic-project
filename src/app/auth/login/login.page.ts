@@ -144,15 +144,11 @@ export class LoginPage implements OnInit {
             this.isLoginFailed = true;
             this.isLoading = false;
             break;
-          case 401:
-            this.isLoginFailed = true;
-            this.isLoading = false;
-            this.notification.error(err.error);
-            break;
           default:
             this.isExpired = false;
             this.isLoginFailed = true;
             this.isLoading = false;
+            this.notification.error(err.error);
             break;
         }
         return;
