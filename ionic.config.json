@@ -1,5 +1,5 @@
 {
-  "name": "rh-listas-presencas",
+  "name": "base-project",
   "integrations": {
     "capacitor": {}
   },

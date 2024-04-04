@@ -1,13 +1,11 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'rh.listas.presencas',
-  appName: 'rh-listas-presencas',
+  appId: 'base.project',
+  appName: 'base-project',
   webDir: 'www/browser',
   server: {
-    androidScheme: 'https',
     cleartext: true,
-    hostname: 'siaadesv.cambuhy.com.br',
   },
 };
 
