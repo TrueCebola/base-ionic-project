@@ -11,7 +11,6 @@ import {
   IonSkeletonText,
   IonCardHeader,
 } from '@ionic/angular/standalone';
-import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { PoSyncService } from '@po-ui/ng-sync';
 
 @Component({
@@ -31,7 +30,6 @@ import { PoSyncService } from '@po-ui/ng-sync';
     IonCard,
     IonCardContent,
     IonCardTitle,
-    ExploreContainerComponent,
   ],
 })
 export class Tab2Page {

@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "rh.listas.presencas"
+    namespace "base.project"
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "rh.listas.presencas"
+        applicationId "base.project"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

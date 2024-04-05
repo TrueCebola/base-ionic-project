@@ -1,9 +1,7 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-
-const TOKEN = '';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -13,9 +11,10 @@ const httpOptions = {
   providedIn: 'root',
 })
 export class AuthService {
+  private http = inject(HttpClient);
   auth_api = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
   login(username: string, password: string): Observable<any> {
     return this.http.post(

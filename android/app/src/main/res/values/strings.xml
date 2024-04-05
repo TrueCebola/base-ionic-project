@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">rh-listas-presencas</string>
-    <string name="title_activity_main">rh-listas-presencas</string>
-    <string name="package_name">rh.listas.presencas</string>
-    <string name="custom_url_scheme">rh.listas.presencas</string>
+    <string name="app_name">base-project</string>
+    <string name="title_activity_main">base-project</string>
+    <string name="package_name">base.project</string>
+    <string name="custom_url_scheme">base.project</string>
 </resources>

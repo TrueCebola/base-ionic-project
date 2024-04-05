@@ -131,8 +131,9 @@ export class LoginPage implements OnInit {
         // this.reloadPage();
         this.buttonDisabled = true;
         this.notification.success('Login efetuado com sucesso!');
+        console.log(data);
         setTimeout(() => {
-          this.router.navigate(['tabs/tab1']);
+          // this.router.navigate(['tabs/tab1']);
         }, 1000);
         return;
       },
@@ -149,6 +150,7 @@ export class LoginPage implements OnInit {
             this.isExpired = false;
             this.isLoginFailed = true;
             this.isLoading = false;
+            console.log(err);
             this.notification.error(err.error);
             break;
         }

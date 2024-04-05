@@ -5,7 +5,6 @@ import {
   IonTitle,
   IonContent,
 } from '@ionic/angular/standalone';
-import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { PoPageModule, PoTableModule } from '@po-ui/ng-components';
 
 @Component({
@@ -18,7 +17,6 @@ import { PoPageModule, PoTableModule } from '@po-ui/ng-components';
     IonToolbar,
     IonTitle,
     IonContent,
-    ExploreContainerComponent,
     PoTableModule,
     PoPageModule,
   ],

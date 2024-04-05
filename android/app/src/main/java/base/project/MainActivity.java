@@ -1,4 +1,4 @@
-package rh.listas.presencas;
+package base.project;
 
 import com.getcapacitor.BridgeActivity;
 
