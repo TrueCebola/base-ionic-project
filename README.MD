@@ -13,3 +13,4 @@ Esse projeto tem como objetivo servir como base/template para criação de aplic
 ## WIP
 
 _README ainda em desenvolvimento_
+_É planejada a implementação do [Electron](https://www.electronjs.org/) para aplicações desktop_
