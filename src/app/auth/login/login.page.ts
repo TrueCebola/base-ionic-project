@@ -74,7 +74,7 @@ export class LoginPage implements OnInit {
     rememberUserHint: 'Remove a necessidade de fazer login novamente',
   };
   loginErrors: Array<string> = [];
-  logo = '../../../assets/logo_cambuhy_2.png';
+  logo = environment.logo2Path;
   passwordErrors: Array<string> = [];
   productName = 'SIAA';
   roles: string[] = [];
