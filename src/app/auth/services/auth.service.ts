@@ -17,17 +17,13 @@ export class AuthService {
   constructor() {}
 
   login(username: string, password: string): Observable<any> {
-    return this.http.post(
-      `${this.auth_api}/signin`,
-      {
-        username,
-        password,
-      },
-      httpOptions
-    );
+    return this.http.post(`${this.auth_api}/signin`, {
+      username,
+      password,
+    });
   }
 
   logout(): Observable<any> {
-    return this.http.post(`${this.auth_api}/signout`, {}, httpOptions);
+    return this.http.post(`${this.auth_api}/signout`, {});
   }
 }

@@ -35,7 +35,7 @@ export class AppComponent {
 
   initSync() {
     const config: PoSyncConfig = {
-      type: PoNetworkType.wifi,
+      type: PoNetworkType.unknown,
     };
     const schemas = [conferenceSchema];
     this.poSync.prepare(schemas, config).then(() => {
