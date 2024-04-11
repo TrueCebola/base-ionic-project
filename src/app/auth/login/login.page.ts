@@ -17,6 +17,7 @@ import {
   PoLanguage,
   PoModule,
   PoNotificationService,
+  PoToasterOrientation,
 } from '@po-ui/ng-components';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
@@ -126,15 +127,11 @@ export class LoginPage implements OnInit {
     this.authService.login(CRYPT_USER, CRYPT_PWD).subscribe({
       next: (data) => {
         this.storageService.saveUser(data);
+        this.storageService.saveLocal(data);
         this.isLoggedIn = true;
         this.isLoginFailed = false;
         // this.reloadPage();
         this.buttonDisabled = true;
-        this.notification.success('Login efetuado com sucesso!');
-        console.log(data);
-        setTimeout(() => {
-          this.router.navigate(['tabs/tab1']);
-        }, 1000);
         return;
       },
       error: (err) => {
@@ -158,6 +155,12 @@ export class LoginPage implements OnInit {
         return;
       },
       complete: () => {
+        this.notification.success({
+          duration: 3000,
+          message: 'Login efetuado com sucesso!',
+          orientation: PoToasterOrientation.Top,
+        });
+        this.router.navigate(['tabs/tab1']);
         return;
       },
     });

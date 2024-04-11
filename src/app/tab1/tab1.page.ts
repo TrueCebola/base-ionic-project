@@ -4,8 +4,13 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
+  IonButtons,
+  IonButton,
+  IonIcon,
 } from '@ionic/angular/standalone';
 import { PoPageModule, PoTableModule } from '@po-ui/ng-components';
+import { addIcons } from 'ionicons';
+import { cellularOutline, wifiOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-tab1',
@@ -13,6 +18,9 @@ import { PoPageModule, PoTableModule } from '@po-ui/ng-components';
   styleUrls: ['tab1.page.scss'],
   standalone: true,
   imports: [
+    IonIcon,
+    IonButton,
+    IonButtons,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -22,5 +30,7 @@ import { PoPageModule, PoTableModule } from '@po-ui/ng-components';
   ],
 })
 export class Tab1Page {
-  constructor() {}
+  constructor() {
+    addIcons({ cellularOutline, wifiOutline });
+  }
 }

@@ -10,6 +10,7 @@ import {
   IonCardTitle,
   IonSkeletonText,
   IonCardHeader,
+  IonButtons,
 } from '@ionic/angular/standalone';
 import { PoSyncService } from '@po-ui/ng-sync';
 
@@ -19,6 +20,7 @@ import { PoSyncService } from '@po-ui/ng-sync';
   styleUrls: ['tab2.page.scss'],
   standalone: true,
   imports: [
+    IonButtons,
     IonCardHeader,
     IonSkeletonText,
     IonButton,
