@@ -41,6 +41,7 @@ export class StorageService {
   public saveLocal(data: any) {
     window.localStorage.removeItem('teste');
     window.localStorage.setItem('teste', data.token);
+    console.log(window.localStorage.getItem('teste'));
   }
 
   public saveUser(data: any): void {

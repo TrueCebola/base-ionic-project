@@ -13,7 +13,10 @@ import { environment } from './environments/environment';
 import { provideHttpClient } from '@angular/common/http';
 import { PoModule, PoServicesModule } from '@po-ui/ng-components';
 import { AuthInterceptor } from './app/helpers/auth.interceptor';
-import { HttpRequestInterceptor } from './app/helpers/http.interceptor';
+import {
+  httpInterceptorProviders,
+  HttpRequestInterceptor,
+} from './app/helpers/http.interceptor';
 
 if (environment.production) {
   enableProdMode();
@@ -25,9 +28,11 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular(),
     provideRouter(routes),
     provideHttpClient(),
+    { provide: PoModule },
     { provide: PoServicesModule },
     { provide: AuthInterceptor },
     { provide: HttpRequestInterceptor },
+    { provide: httpInterceptorProviders, useValue: httpInterceptorProviders },
     {
       provide: PoStorageService,
       useValue: PoStorageService.providePoStorage(),

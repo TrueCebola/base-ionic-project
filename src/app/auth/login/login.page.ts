@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -6,6 +6,11 @@ import {
   IonHeader,
   IonTitle,
   IonToolbar,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonInput,
 } from '@ionic/angular/standalone';
 import {
   PoPageLogin,
@@ -24,6 +29,7 @@ import { AuthService } from '../services/auth.service';
 import { StorageService } from '../services/storage.service';
 import { AES } from 'crypto-js';
 import { environment } from 'src/environments/environment';
+import { PoNetworkService, PoNetworkType } from '@po-ui/ng-sync';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +37,11 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./login.page.scss'],
   standalone: true,
   imports: [
+    IonInput,
+    IonCardContent,
+    IonCardTitle,
+    IonCardHeader,
+    IonCard,
     IonContent,
     IonHeader,
     IonTitle,
@@ -42,12 +53,12 @@ import { environment } from 'src/environments/environment';
   ],
 })
 export class LoginPage implements OnInit {
-  constructor(
-    private authService: AuthService,
-    private storageService: StorageService,
-    private router: Router,
-    private notification: PoNotificationService
-  ) {}
+  private authService = inject(AuthService);
+  private storageService = inject(StorageService);
+  private router = inject(Router);
+  private notification = inject(PoNotificationService);
+  private network = inject(PoNetworkService);
+  constructor() {}
 
   private readonly _encrytion_key = environment.encryption_key;
   api_url = window.location.href.split('/');
@@ -76,11 +87,14 @@ export class LoginPage implements OnInit {
   };
   loginErrors: Array<string> = [];
   logo = environment.logo2Path;
+  networkType!: PoNetworkType;
   passwordErrors: Array<string> = [];
   productName = 'SIAA';
   roles: string[] = [];
   spaceMessage!: string | undefined;
   timeOut?: number;
+
+  @ViewChild('login', { static: true }) login!: PoPageLogin;
 
   checkSpaces(event: string): void {
     if (event.includes(' ')) {
@@ -123,47 +137,59 @@ export class LoginPage implements OnInit {
       this._encrytion_key
     ).toString();
     const SAVE_LOGIN = data.rememberUser;
+    let networkStatus = this.network.getConnectionStatus().status;
     this.isLoading = true;
-    this.authService.login(CRYPT_USER, CRYPT_PWD).subscribe({
-      next: (data) => {
-        this.storageService.saveUser(data);
-        this.storageService.saveLocal(data);
-        this.isLoggedIn = true;
-        this.isLoginFailed = false;
-        // this.reloadPage();
-        this.buttonDisabled = true;
-        return;
-      },
-      error: (err) => {
-        switch (err.error.code) {
-          case 423:
-            this.isExpired = true;
-            this.storageService.setExpired(true);
-            this.router.navigate(['auth/senha-expirada']);
-            this.isLoginFailed = true;
-            this.isLoading = false;
-            break;
-          default:
-            this.isExpired = false;
-            this.isLoginFailed = true;
-            this.isLoading = false;
-            err.error
-              ? this.notification.error(err.error)
-              : this.notification.error(err.message);
-            break;
-        }
-        return;
-      },
-      complete: () => {
-        this.notification.success({
-          duration: 3000,
-          message: 'Login efetuado com sucesso!',
-          orientation: PoToasterOrientation.Top,
-        });
-        this.router.navigate(['tabs/tab1']);
-        return;
-      },
-    });
+    if (networkStatus) {
+      this.authService.login(CRYPT_USER, CRYPT_PWD, 'hybrid').subscribe({
+        next: (data) => {
+          this.storageService.saveUser(data);
+          this.isLoggedIn = true;
+          this.isLoginFailed = false;
+          // this.reloadPage();
+          this.buttonDisabled = true;
+          return;
+        },
+        error: (err) => {
+          switch (err.error.code) {
+            case 423:
+              this.isExpired = true;
+              this.storageService.setExpired(true);
+              this.router.navigate(['auth/senha-expirada']);
+              this.isLoginFailed = true;
+              this.isLoading = false;
+              break;
+            default:
+              this.isExpired = false;
+              this.isLoginFailed = true;
+              this.isLoading = false;
+              err.error
+                ? this.notification.error(err.error)
+                : this.notification.error(err.message);
+              break;
+          }
+          return;
+        },
+        complete: () => {
+          let pwdExpires = this.storageService.getUser().pwdExpireDate;
+          this.storageService.saveLocal({
+            username: CRYPT_USER,
+            password: CRYPT_PWD,
+            expires: pwdExpires,
+          });
+          this.login.login = '';
+          this.login.password = '';
+          this.isLoading = false;
+          this.notification.success({
+            duration: 3000,
+            message: 'Login efetuado com sucesso!',
+            orientation: PoToasterOrientation.Top,
+          });
+          this.router.navigate(['tabs/tab1']);
+          return;
+        },
+      });
+    } else {
+    }
   }
 
   reloadPage(): void {

@@ -5,6 +5,7 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar } from '@capacitor/status-bar';
 import {
+  PoNetworkService,
   PoNetworkType,
   PoSyncConfig,
   PoSyncModule,
@@ -12,13 +13,13 @@ import {
 } from '@po-ui/ng-sync';
 import { conferenceSchema } from './tab2/conference-schema.constants';
 import { StorageService } from './auth/services/storage.service';
-import { PoNotificationService } from '@po-ui/ng-components';
+import { PoModule, PoNotificationService } from '@po-ui/ng-components';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   standalone: true,
-  imports: [IonApp, IonRouterOutlet, PoSyncModule],
+  imports: [IonApp, IonRouterOutlet, PoModule, PoSyncModule],
 })
 export class AppComponent {
   constructor(private platform: Platform, private poSync: PoSyncService) {
@@ -27,6 +28,7 @@ export class AppComponent {
 
   private storageService = inject(StorageService);
   private notification = inject(PoNotificationService);
+  private network = inject(PoNetworkService);
 
   async initializeApp() {
     await this.platform.ready();
@@ -35,7 +37,7 @@ export class AppComponent {
     }
     await SplashScreen.hide();
 
-    this.initSync();
+    // this.initSync();
   }
 
   initSync() {
@@ -49,15 +51,33 @@ export class AppComponent {
   }
 
   showExpires(): void {
-    let date = this.storageService.getUser().pwdExpires;
-    let expires = date ? JSON.parse(date) : '';
-    if (!isNaN(expires) && expires < 6 && expires >= 0) {
-      this.notification.warning({
-        message: `Aviso! Sua senha vai expirar em ${expires} dias`,
-      });
-      window.sessionStorage.removeItem('notified');
-      window.sessionStorage.setItem('notified', 'true');
-      return;
+    let date;
+    let expires;
+    if (this.network.getConnectionStatus()) {
+      date = this.storageService.getUser().pwdExpires;
+      let expires = date ? JSON.parse(date) : '';
+      console.log(expires);
+      if (!isNaN(expires) && expires < 6 && expires >= 0) {
+        this.notification.warning({
+          message: `Aviso! Sua senha vai expirar em ${expires} dias`,
+        });
+        window.sessionStorage.removeItem('notified');
+        window.sessionStorage.setItem('notified', 'true');
+        return;
+      }
+    } else {
+      let expirationDate = this.storageService.getUser().pwdExpireDate;
+      date = 30 - Math.ceil(expirationDate / (1000 * 3600 * 24));
+      expires = date ? JSON.parse(String(date)) : '';
+      console.log(expires);
+      if (!isNaN(expires) && expires < 6 && expires >= 0) {
+        this.notification.warning({
+          message: `Aviso! Sua senha vai expirar em ${expires} dias`,
+        });
+        window.sessionStorage.removeItem('notified');
+        window.sessionStorage.setItem('notified', 'true');
+        return;
+      }
     }
     return;
   }

@@ -16,10 +16,11 @@ export class AuthService {
 
   constructor() {}
 
-  login(username: string, password: string): Observable<any> {
+  login(username: string, password: string, platform: string): Observable<any> {
     return this.http.post(`${this.auth_api}/signin`, {
       username,
       password,
+      platform,
     });
   }
 

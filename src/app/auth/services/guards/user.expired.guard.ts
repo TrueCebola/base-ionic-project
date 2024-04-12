@@ -8,6 +8,6 @@ export const userExpiredGuard: CanActivateFn = (route, state) => {
   if (STORAGE.isExpired()) {
     return true;
   }
-  ROUTER.navigate(['/']);
+  ROUTER.navigate(['auth/senha-expirada']);
   return false;
 };
