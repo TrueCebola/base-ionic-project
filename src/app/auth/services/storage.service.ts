@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { AES } from 'crypto-js';
+import { environment } from 'src/environments/environment';
 
 const TOKEN = 'session';
 
@@ -8,10 +9,19 @@ const TOKEN = 'session';
   providedIn: 'root',
 })
 export class StorageService {
-  constructor(private router: Router) {}
+  private readonly _encrytion_key = environment.encryption_key;
+  constructor() {}
 
   clean(): void {
     window.sessionStorage.clear();
+  }
+
+  public getLocal(): any {
+    const INFO = JSON.parse(window.localStorage.getItem('teste')!);
+    if (INFO) {
+      return INFO;
+    }
+    return {};
   }
 
   public getUser(): any {
@@ -39,9 +49,40 @@ export class StorageService {
   }
 
   public saveLocal(data: any) {
-    window.localStorage.removeItem('teste');
-    window.localStorage.setItem('teste', data.token);
-    console.log(window.localStorage.getItem('teste'));
+    let temp: any;
+    if (
+      window.localStorage.getItem('teste') &&
+      window.localStorage.getItem('teste') !== 'undefined' &&
+      window.localStorage.getItem('teste') !== 'null' &&
+      window.localStorage.getItem('teste') !== undefined &&
+      window.localStorage.getItem('teste') !== null
+    ) {
+      temp = JSON.parse(window.localStorage.getItem('teste')!);
+      if (temp?.usuarios) {
+        let exists = temp.usuarios.find((item: any) => {
+          return (
+            String(
+              AES.decrypt(item.username, this._encrytion_key)
+            ).toLowerCase() ===
+            String(
+              AES.decrypt(data.username, this._encrytion_key)
+            ).toLowerCase()
+          );
+        });
+        if (exists) {
+          return;
+        } else {
+          temp.usuarios = [...temp.usuarios, data];
+        }
+      } else {
+        null;
+      }
+      window.localStorage.removeItem('teste');
+      window.localStorage.setItem('teste', JSON.stringify(temp));
+    } else {
+      temp = { usuarios: [data] };
+      window.localStorage.setItem('teste', JSON.stringify(temp));
+    }
   }
 
   public saveUser(data: any): void {

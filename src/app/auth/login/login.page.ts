@@ -28,8 +28,10 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { StorageService } from '../services/storage.service';
 import { AES } from 'crypto-js';
+import * as crypto from 'crypto-js';
 import { environment } from 'src/environments/environment';
 import { PoNetworkService, PoNetworkType } from '@po-ui/ng-sync';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
@@ -137,12 +139,14 @@ export class LoginPage implements OnInit {
       this._encrytion_key
     ).toString();
     const SAVE_LOGIN = data.rememberUser;
+    let user_token: any;
     let networkStatus = this.network.getConnectionStatus().status;
     this.isLoading = true;
     if (networkStatus) {
       this.authService.login(CRYPT_USER, CRYPT_PWD, 'hybrid').subscribe({
         next: (data) => {
           this.storageService.saveUser(data);
+          user_token = data.token;
           this.isLoggedIn = true;
           this.isLoginFailed = false;
           // this.reloadPage();
@@ -170,17 +174,16 @@ export class LoginPage implements OnInit {
           return;
         },
         complete: () => {
-          let pwdExpires = this.storageService.getUser().pwdExpireDate;
           this.storageService.saveLocal({
             username: CRYPT_USER,
             password: CRYPT_PWD,
-            expires: pwdExpires,
+            info: user_token,
           });
           this.login.login = '';
           this.login.password = '';
           this.isLoading = false;
           this.notification.success({
-            duration: 3000,
+            duration: 2000,
             message: 'Login efetuado com sucesso!',
             orientation: PoToasterOrientation.Top,
           });
@@ -189,6 +192,14 @@ export class LoginPage implements OnInit {
         },
       });
     } else {
+      let local = this.storageService.getLocal();
+      let index = local.usuarios.indexOf(
+        local.usuarios.find((item: any) => {
+          String(AES.decrypt(item.username, this._encrytion_key)) ===
+            data.login;
+        })
+      );
+      // if(AES.decrypt(local.usuarios[index].password, this._encrytion_key) === data.password) {}
     }
   }
 

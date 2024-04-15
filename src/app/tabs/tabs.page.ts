@@ -18,6 +18,11 @@ import {
 import { AuthService } from '../auth/services/auth.service';
 import { StorageService } from '../auth/services/storage.service';
 import { Router } from '@angular/router';
+import { PoNetworkService } from '@po-ui/ng-sync';
+import {
+  PoNotificationService,
+  PoToasterOrientation,
+} from '@po-ui/ng-components';
 
 @Component({
   selector: 'app-tabs',
@@ -39,8 +44,10 @@ export class TabsPage {
   }
 
   private authService = inject(AuthService);
-  private storageService = inject(StorageService);
+  private network = inject(PoNetworkService);
+  private notification = inject(PoNotificationService);
   private router = inject(Router);
+  private storageService = inject(StorageService);
 
   public actionSheetButtons = [
     {
@@ -48,22 +55,42 @@ export class TabsPage {
       role: 'destructive',
       icon: 'log-out-outline',
       handler: () => {
-        this.authService.logout().subscribe({
-          next: () => {
-            this.storageService.clean();
-            return;
-          },
-          error: () => {
-            return;
-          },
-          complete: () => {
-            this.router.navigate(['auth/login']);
-            return;
-          },
-        });
+        this.logout();
       },
     },
   ];
 
   public environmentInjector = inject(EnvironmentInjector);
+
+  logout() {
+    let networkStatus = this.network.getConnectionStatus();
+    if (networkStatus) {
+      this.authService.logout().subscribe({
+        next: () => {
+          this.storageService.clean();
+          return;
+        },
+        error: () => {
+          return;
+        },
+        complete: () => {
+          this.router.navigate(['auth/login']);
+          this.notification.success({
+            duration: 2000,
+            message: 'Desconectou com sucesso!',
+            orientation: PoToasterOrientation.Top,
+          });
+          return;
+        },
+      });
+    } else {
+      this.storageService.clean();
+      this.router.navigate(['auth/login']);
+      this.notification.success({
+        duration: 2000,
+        message: 'Desconectou com sucesso!',
+        orientation: PoToasterOrientation.Top,
+      });
+    }
+  }
 }
