@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { AES } from 'crypto-js';
 import { environment } from 'src/environments/environment';
+import * as crypto from 'crypto-js';
 
 const TOKEN = 'session';
 
@@ -17,7 +18,7 @@ export class StorageService {
   }
 
   public getLocal(): any {
-    const INFO = JSON.parse(window.localStorage.getItem('teste')!);
+    const INFO = JSON.parse(window.localStorage.getItem('local-users')!);
     if (INFO) {
       return INFO;
     }
@@ -51,22 +52,22 @@ export class StorageService {
   public saveLocal(data: any) {
     let temp: any;
     if (
-      window.localStorage.getItem('teste') &&
-      window.localStorage.getItem('teste') !== 'undefined' &&
-      window.localStorage.getItem('teste') !== 'null' &&
-      window.localStorage.getItem('teste') !== undefined &&
-      window.localStorage.getItem('teste') !== null
+      window.localStorage.getItem('local-users') &&
+      window.localStorage.getItem('local-users') !== 'undefined' &&
+      window.localStorage.getItem('local-users') !== 'null' &&
+      window.localStorage.getItem('local-users') !== undefined &&
+      window.localStorage.getItem('local-users') !== null
     ) {
-      temp = JSON.parse(window.localStorage.getItem('teste')!);
+      temp = JSON.parse(window.localStorage.getItem('local-users')!);
       if (temp?.usuarios) {
         let exists = temp.usuarios.find((item: any) => {
           return (
-            String(
-              AES.decrypt(item.username, this._encrytion_key)
-            ).toLowerCase() ===
-            String(
-              AES.decrypt(data.username, this._encrytion_key)
-            ).toLowerCase()
+            AES.decrypt(item.username, this._encrytion_key)
+              .toString(crypto.enc.Utf8)
+              .toLowerCase() ===
+            AES.decrypt(data.username, this._encrytion_key)
+              .toString(crypto.enc.Utf8)
+              .toLowerCase()
           );
         });
         if (exists) {
@@ -77,11 +78,11 @@ export class StorageService {
       } else {
         null;
       }
-      window.localStorage.removeItem('teste');
-      window.localStorage.setItem('teste', JSON.stringify(temp));
+      window.localStorage.removeItem('local-users');
+      window.localStorage.setItem('local-users', JSON.stringify(temp));
     } else {
       temp = { usuarios: [data] };
-      window.localStorage.setItem('teste', JSON.stringify(temp));
+      window.localStorage.setItem('local-users', JSON.stringify(temp));
     }
   }
 

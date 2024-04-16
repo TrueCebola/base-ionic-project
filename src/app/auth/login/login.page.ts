@@ -125,6 +125,14 @@ export class LoginPage implements OnInit {
     return;
   }
 
+  dateDifference(data: Date) {
+    let pwdate = new Date(data);
+    let currentDate = new Date();
+    let difference = currentDate.getTime() - pwdate.getTime();
+    let date = 30 - Math.ceil(difference / (1000 * 3600 * 24));
+    return date;
+  }
+
   ngOnInit() {
     if (this.storageService.isLoggedIn()) {
       this.isLoggedIn = true;
@@ -193,13 +201,68 @@ export class LoginPage implements OnInit {
       });
     } else {
       let local = this.storageService.getLocal();
-      let index = local.usuarios.indexOf(
-        local.usuarios.find((item: any) => {
-          String(AES.decrypt(item.username, this._encrytion_key)) ===
-            data.login;
-        })
-      );
-      // if(AES.decrypt(local.usuarios[index].password, this._encrytion_key) === data.password) {}
+      let index = local?.usuarios?.findIndex((item: any) => {
+        return (
+          AES.decrypt(item.username, this._encrytion_key)
+            .toString(crypto.enc.Utf8)
+            .toLowerCase() === data.login.toLowerCase()
+        );
+      });
+      if (index !== -1 && index !== undefined) {
+        if (
+          AES.decrypt(
+            local.usuarios[index].password,
+            this._encrytion_key
+          ).toString(crypto.enc.Utf8) === data.password
+        ) {
+          this.storageService.saveUser({
+            token: local.usuarios[index].info,
+            auth: true,
+          });
+          if (
+            this.storageService.getUser().pwdExpires > 0 &&
+            this.dateDifference(this.storageService.getUser().pwdExpireDate) > 0
+          ) {
+            // this.storageService.saveLocal({
+            //   username: CRYPT_USER,
+            //   password: CRYPT_PWD,
+            //   info: local.usuarios[index].info,
+            // });
+            this.login.login = '';
+            this.login.password = '';
+            this.isLoading = false;
+            this.notification.success({
+              duration: 2000,
+              message: 'Login efetuado com sucesso!',
+              orientation: PoToasterOrientation.Top,
+            });
+            this.router.navigate(['tabs/tab1']);
+            return;
+          } else {
+            this.isLoginFailed = true;
+            this.isLoading = false;
+            this.router.navigate(['auth/senha-expirada']);
+            return;
+          }
+        } else {
+          this.isLoginFailed = true;
+          this.isLoading = false;
+          this.notification.error({
+            message: 'Login ou senha inválidos!',
+            orientation: PoToasterOrientation.Top,
+          });
+          return;
+        }
+      } else {
+        this.isLoginFailed = true;
+        this.isLoading = false;
+        this.notification.error({
+          message:
+            'Usuário não encontrado no registro offline! Para ter acesso, faça login online pelo menos uma vez.',
+          orientation: PoToasterOrientation.Top,
+        });
+        return;
+      }
     }
   }
 

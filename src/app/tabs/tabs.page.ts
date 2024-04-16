@@ -63,7 +63,7 @@ export class TabsPage {
   public environmentInjector = inject(EnvironmentInjector);
 
   logout() {
-    let networkStatus = this.network.getConnectionStatus();
+    let networkStatus = this.network.getConnectionStatus().status;
     if (networkStatus) {
       this.authService.logout().subscribe({
         next: () => {
