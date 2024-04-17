@@ -37,16 +37,24 @@ export class AppComponent {
     }
     await SplashScreen.hide();
 
-    // this.initSync();
+    this.initSync();
   }
 
   initSync() {
     const config: PoSyncConfig = {
-      type: PoNetworkType.unknown,
+      type: PoNetworkType.wifi,
     };
     const schemas = [conferenceSchema];
+    const newInstallation = this.storageService.isNewInstall();
+    const networkStatus = this.network.getConnectionStatus().status;
     this.poSync.prepare(schemas, config).then(() => {
-      this.poSync.sync();
+      if (networkStatus) {
+        if (newInstallation) {
+          this.poSync.loadData();
+        } else {
+          this.poSync.sync();
+        }
+      }
     });
   }
 

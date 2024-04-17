@@ -35,7 +35,11 @@ bootstrapApplication(AppComponent, {
     { provide: httpInterceptorProviders, useValue: httpInterceptorProviders },
     {
       provide: PoStorageService,
-      useValue: PoStorageService.providePoStorage(),
+      useValue: PoStorageService.providePoStorage({
+        name: 'mystorage',
+        storeName: '_mystore',
+        driverOrder: ['lokijs', 'indexeddb', 'localstorage', 'websql'],
+      }),
     },
   ],
 });

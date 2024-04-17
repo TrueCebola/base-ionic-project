@@ -49,18 +49,33 @@ export class StorageService {
     return false;
   }
 
-  public saveLocal(data: any) {
-    let temp: any;
+  public isNewInstall(): boolean {
+    let local_users = window.localStorage.getItem('local-users');
     if (
-      window.localStorage.getItem('local-users') &&
-      window.localStorage.getItem('local-users') !== 'undefined' &&
-      window.localStorage.getItem('local-users') !== 'null' &&
-      window.localStorage.getItem('local-users') !== undefined &&
-      window.localStorage.getItem('local-users') !== null
+      local_users &&
+      local_users !== 'undefined' &&
+      local_users !== 'null' &&
+      local_users !== undefined &&
+      local_users !== null
     ) {
-      temp = JSON.parse(window.localStorage.getItem('local-users')!);
-      if (temp?.usuarios) {
-        let exists = temp.usuarios.find((item: any) => {
+      return true;
+    }
+    return false;
+  }
+
+  public saveLocal(data: any) {
+    let users: any;
+    let local_users = window.localStorage.getItem('local-users');
+    if (
+      local_users &&
+      local_users !== 'undefined' &&
+      local_users !== 'null' &&
+      local_users !== undefined &&
+      local_users !== null
+    ) {
+      users = JSON.parse(window.localStorage.getItem('local-users')!);
+      if (users?.usuarios) {
+        let exists = users.usuarios.find((item: any) => {
           return (
             AES.decrypt(item.username, this._encrytion_key)
               .toString(crypto.enc.Utf8)
@@ -73,16 +88,16 @@ export class StorageService {
         if (exists) {
           return;
         } else {
-          temp.usuarios = [...temp.usuarios, data];
+          users.usuarios = [...users.usuarios, data];
         }
       } else {
         null;
       }
       window.localStorage.removeItem('local-users');
-      window.localStorage.setItem('local-users', JSON.stringify(temp));
+      window.localStorage.setItem('local-users', JSON.stringify(users));
     } else {
-      temp = { usuarios: [data] };
-      window.localStorage.setItem('local-users', JSON.stringify(temp));
+      users = { usuarios: [data] };
+      window.localStorage.setItem('local-users', JSON.stringify(users));
     }
   }
 
