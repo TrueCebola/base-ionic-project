@@ -19,18 +19,23 @@ import {
 } from '@ionic/angular/standalone';
 import {
   PoDisclaimerGroup,
+  PoModalModule,
   PoNotificationService,
   PoPageAction,
   PoPageFilter,
   PoPageModule,
   PoTableColumn,
+  PoTableColumnSpacing,
   PoTableModule,
   PoToasterOrientation,
+  PoTooltipModule,
 } from '@po-ui/ng-components';
 import { PoEntity, PoNetworkService, PoSyncService } from '@po-ui/ng-sync';
 import { addIcons } from 'ionicons';
 import { cellularOutline, wifiOutline } from 'ionicons/icons';
 import { environment } from 'src/environments/environment';
+import { StorageService } from '../auth/services/storage.service';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-tab1',
@@ -47,9 +52,12 @@ import { environment } from 'src/environments/environment';
     IonContent,
     PoTableModule,
     PoPageModule,
+    PoModalModule,
+    NgTemplateOutlet,
+    PoTooltipModule,
   ],
 })
-export class Tab1Page implements AfterViewInit {
+export class Tab1Page implements OnInit, AfterViewInit {
   @ViewChild('iconSpin', { read: ElementRef })
   iconSpin!: ElementRef<HTMLSpanElement>;
 
@@ -65,9 +73,11 @@ export class Tab1Page implements AfterViewInit {
   private baseItems: any[] = [];
   private currentPage = 1;
   private currentPageSize = 10;
+  private info: any;
   private network = inject(PoNetworkService);
   private notification = inject(PoNotificationService);
   private poSync = inject(PoSyncService);
+  private storage = inject(StorageService);
   private tab1Model: PoEntity;
   public actions: PoPageAction[] = [
     {
@@ -75,7 +85,11 @@ export class Tab1Page implements AfterViewInit {
       url: 'tabs/tab2',
     },
   ];
+  public canCreate = false;
+  public canUpdate = false;
+  public canDelete = false;
   public columns: PoTableColumn[] = [
+    { property: 'edit', type: 'cellTemplate' },
     { property: 'id' },
     { property: 'title' },
     { property: 'location' },
@@ -100,6 +114,7 @@ export class Tab1Page implements AfterViewInit {
   public tab1: any;
   public loadingTable = false;
   public loadingMore = false;
+  public tableSpacing = PoTableColumnSpacing.Small;
   public syncing = false;
   public syncIcon = 'sync';
   public syncText = 'Sincronizar';
@@ -111,7 +126,9 @@ export class Tab1Page implements AfterViewInit {
   }
 
   disclaimerChange(change: any) {
-    console.log(change);
+    if (change.removedDisclaimer) {
+      this.quickSearch('');
+    }
   }
 
   loadMore() {
@@ -124,7 +141,6 @@ export class Tab1Page implements AfterViewInit {
   async loadSchema() {
     this.tab1 = await this.tab1Model.find().sort('-id').exec();
     this.setItems(true);
-    this.loadingTable = false;
     this.syncing = false;
   }
 
@@ -132,8 +148,8 @@ export class Tab1Page implements AfterViewInit {
     let networkStatus = this.network.getConnectionStatus().status;
     this.syncing = true;
     this.syncIcon = 'sync';
-    this.animation.play();
     this.syncText = 'Sincronizando';
+    this.animation.play();
     if (networkStatus) {
       this.poSync
         .sync()
@@ -141,6 +157,10 @@ export class Tab1Page implements AfterViewInit {
           this.notification.success({
             message: 'Sincronização concluída!',
           });
+          this.animation.stop();
+          this.syncText = 'Sincronizar';
+          this.syncing = false;
+          this.loadSchema();
         })
         .catch(() => {
           this.notification.error({
@@ -148,18 +168,21 @@ export class Tab1Page implements AfterViewInit {
               'Ocorreu um erro na sincronização. Tente novamente mais tarde.',
             orientation: PoToasterOrientation.Top,
           });
+          this.animation.stop();
+          this.syncText = 'Sincronizar';
           this.syncIcon = 'sync_problem';
+          this.syncing = false;
         });
     } else {
       this.notification.error({
         message: 'Sem conexão com a internet. Tente novamente mais tarde.',
         orientation: PoToasterOrientation.Top,
       });
+      this.animation.stop();
+      this.syncText = 'Sincronizar';
       this.syncIcon = 'wifi_off';
+      this.syncing = false;
     }
-    this.animation.stop();
-    this.syncText = 'Sincronizar';
-    this.syncing = false;
     return;
   }
 
@@ -172,15 +195,42 @@ export class Tab1Page implements AfterViewInit {
       .fromTo('transform', 'rotate(0deg)', 'rotate(-360deg)');
   }
 
+  ngOnInit() {
+    this.info = this.storage.getUser();
+    let app = this.info.permissions.find(
+      (permission: any) => permission.name === ''
+    );
+    // this.canCreate = app.create;
+    // this.canUpdate = app.update;
+    // this.canDelete = app.delete;
+    // this.actions[0].visible = this.canCreate;
+    // if (this.canUpdate || this.canDelete) {
+    //   this.columns[0].visible = true;
+    // } else {
+    //   this.columns[0].visible = false;
+    // }
+  }
+
   paginate(array: any[], page: number, pageSize: number) {
     return array.slice(0, page * pageSize);
   }
 
   async quickSearch(search: string) {
-    this.tab1 = await this.tab1Model.find().sort('-id').exec();
+    if (search) {
+      this.tab1 = await this.tab1Model.find().filter({ title: search }).exec();
+      this.disclaimerGroup.disclaimers = [
+        ...this.disclaimerGroup.disclaimers,
+        { property: 'title', label: `Busca rápida: ${search}`, value: search },
+      ];
+    } else {
+      this.tab1 = await this.tab1Model.find().sort('-id').exec();
+    }
+    this.setItems(true);
+    this.syncing = false;
   }
 
   setItems(event: any) {
+    this.loadingTable = true;
     this.baseItems = this.tab1.items;
     this.items = this.paginate(
       this.baseItems,
@@ -193,5 +243,6 @@ export class Tab1Page implements AfterViewInit {
     if (event) {
       event = this.items.length === this.baseItems.length;
     }
+    this.loadingTable = false;
   }
 }

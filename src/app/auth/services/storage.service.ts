@@ -49,20 +49,6 @@ export class StorageService {
     return false;
   }
 
-  public isNewInstall(): boolean {
-    let local_users = window.localStorage.getItem('local-users');
-    if (
-      local_users &&
-      local_users !== 'undefined' &&
-      local_users !== 'null' &&
-      local_users !== undefined &&
-      local_users !== null
-    ) {
-      return true;
-    }
-    return false;
-  }
-
   public saveLocal(data: any) {
     let users: any;
     let local_users = window.localStorage.getItem('local-users');

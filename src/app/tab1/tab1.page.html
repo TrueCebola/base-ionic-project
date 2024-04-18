@@ -24,18 +24,73 @@
     [p-filter]="filter"
     p-title="Heroes"
   >
-    <po-table
-      [p-columns]="columns"
-      [p-height]="500"
-      [p-hide-table-search]="true"
-      [p-hide-columns-manager]="true"
-      [p-items]="items"
-      [p-loading]="loadingTable"
-      [p-loading-show-more]="loadingMore"
-      (p-show-more)="loadMore()"
-      [p-show-more-disabled]="getMore"
-      [p-sort]="true"
-      [p-striped]="true"
-    ></po-table
-  ></po-page-list>
+    <ng-container
+      *ngTemplateOutlet="table; context: { $implicit: canUpdate, canDelete}"
+    ></ng-container>
+    <ng-template #table>
+      <po-table
+        [p-columns]="columns"
+        [p-height]="500"
+        [p-hide-table-search]="true"
+        [p-hide-columns-manager]="true"
+        [p-items]="items"
+        [p-loading]="loadingTable"
+        [p-loading-show-more]="loadingMore"
+        (p-show-more)="loadMore()"
+        [p-show-more-disabled]="getMore"
+        [p-sort]="true"
+        [p-spacing]="tableSpacing"
+        [p-striped]="false"
+      >
+        <ng-template p-table-cell-template let-column="column" let-row="row">
+          <!-- @if(column.property==='edit'){ @if(canDelete){ -->
+          <span
+            class="po-clickable material-symbols-outlined"
+            [p-append-in-body]="true"
+            p-tooltip="Excluir"
+            p-tooltip-position="top"
+            style="font-size: 21px"
+          >
+            delete
+          </span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <!-- } @if(canUpdate){ -->
+          <span
+            class="po-clickable material-symbols-outlined"
+            [p-append-in-body]="true"
+            p-tooltip="Editar"
+            p-tooltip-position="top"
+            style="font-size: 21px"
+          >
+            edit
+          </span>
+          <!-- } } -->
+        </ng-template>
+      </po-table>
+    </ng-template>
+  </po-page-list>
+
+  <!-- <po-modal
+    #advancedSearch
+    p-title="Busca Avançada"
+    [p-primary-action]="primaryAction"
+    [p-secondary-action]="secondaryAction"
+  >
+    <ng-template>
+      <form [formGroup]=""></form>
+    </ng-template>
+  </po-modal> -->
+
+  <!-- <po-modal
+    #confirmExclusion
+    p-title="Excluir"
+    [p-primary-action]="{action: exclusion.bind(this), label: 'Excluir',}"
+    [p-secondary-action]="{
+    action: closeExclusion.bind(this),
+    label: 'Cancelar',
+    danger: true
+  }"
+  >
+    <span>Deseja realmente excluir este item?</span>
+  </po-modal> -->
 </ion-content>

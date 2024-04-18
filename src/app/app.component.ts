@@ -45,15 +45,10 @@ export class AppComponent {
       type: PoNetworkType.wifi,
     };
     const schemas = [conferenceSchema];
-    const newInstallation = this.storageService.isNewInstall();
     const networkStatus = this.network.getConnectionStatus().status;
     this.poSync.prepare(schemas, config).then(() => {
       if (networkStatus) {
-        if (newInstallation) {
-          this.poSync.loadData();
-        } else {
-          this.poSync.sync();
-        }
+        this.poSync.sync();
       }
     });
   }
@@ -64,7 +59,6 @@ export class AppComponent {
     if (this.network.getConnectionStatus()) {
       date = this.storageService.getUser().pwdExpires;
       let expires = date ? JSON.parse(date) : '';
-      console.log(expires);
       if (!isNaN(expires) && expires < 6 && expires >= 0) {
         this.notification.warning({
           message: `Aviso! Sua senha vai expirar em ${expires} dias`,
