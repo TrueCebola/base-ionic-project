@@ -30,7 +30,7 @@
     "@capacitor/network": "5.0.7",
     "@capacitor/splash-screen": "5.0.7",
     "@capacitor/status-bar": "5.0.7",
-    "@ionic/angular": "^7.7.3",
+    "@ionic/angular": "^8.0.0-rc.2",
     "@po-ui/ng-components": "^17.5.0",
     "@po-ui/ng-sync": "^17.1.0",
     "@po-ui/ng-templates": "^17.5.0",
