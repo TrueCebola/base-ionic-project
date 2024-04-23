@@ -27,9 +27,9 @@
 
 @import "./light-theme.css";
 
-// @media (prefers-color-scheme: dark) {
-//   @import "./dark-theme.css";
-// }
+@media (prefers-color-scheme: dark) {
+  @import "./dark-theme.css";
+}
 
 /*
 "node_modules/@totvs/po-theme/css/po-theme-default-variables.min.css",

@@ -11,7 +11,7 @@ import {
   PoSyncModule,
   PoSyncService,
 } from '@po-ui/ng-sync';
-import { conferenceSchema } from './tab2/conference-schema.constants';
+import { conferenceSchema } from './conference-schema.constants';
 import { StorageService } from './auth/services/storage.service';
 import { PoModule, PoNotificationService } from '@po-ui/ng-components';
 

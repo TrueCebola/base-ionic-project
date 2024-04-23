@@ -6,6 +6,11 @@ import {
   IonIcon,
   IonLabel,
   IonActionSheet,
+  IonContent,
+  IonHeader,
+  IonFooter,
+  IonToolbar,
+  IonTitle,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -30,6 +35,11 @@ import {
   styleUrls: ['tabs.page.scss'],
   standalone: true,
   imports: [
+    IonTitle,
+    IonToolbar,
+    IonFooter,
+    IonHeader,
+    IonContent,
     IonActionSheet,
     IonTabs,
     IonTabBar,
@@ -78,7 +88,6 @@ export class TabsPage {
           this.notification.success({
             duration: 2000,
             message: 'Desconectou com sucesso!',
-            orientation: PoToasterOrientation.Top,
           });
           return;
         },
@@ -89,7 +98,6 @@ export class TabsPage {
       this.notification.success({
         duration: 2000,
         message: 'Desconectou com sucesso!',
-        orientation: PoToasterOrientation.Top,
       });
     }
   }

@@ -193,7 +193,6 @@ export class LoginPage implements OnInit {
           this.notification.success({
             duration: 2000,
             message: 'Login efetuado com sucesso!',
-            orientation: PoToasterOrientation.Top,
           });
           this.router.navigate(['tabs/tab1']);
           return;
@@ -234,7 +233,6 @@ export class LoginPage implements OnInit {
             this.notification.success({
               duration: 2000,
               message: 'Login efetuado com sucesso!',
-              orientation: PoToasterOrientation.Top,
             });
             this.router.navigate(['tabs/tab1']);
             return;
@@ -249,7 +247,6 @@ export class LoginPage implements OnInit {
           this.isLoading = false;
           this.notification.error({
             message: 'Login ou senha inválidos!',
-            orientation: PoToasterOrientation.Top,
           });
           return;
         }
@@ -259,7 +256,6 @@ export class LoginPage implements OnInit {
         this.notification.error({
           message:
             'Usuário não encontrado no registro offline! Para ter acesso, faça login online pelo menos uma vez.',
-          orientation: PoToasterOrientation.Top,
         });
         return;
       }

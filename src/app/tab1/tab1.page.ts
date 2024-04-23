@@ -166,7 +166,6 @@ export class Tab1Page implements OnInit, AfterViewInit {
           this.notification.error({
             message:
               'Ocorreu um erro na sincronização. Tente novamente mais tarde.',
-            orientation: PoToasterOrientation.Top,
           });
           this.animation.stop();
           this.syncText = 'Sincronizar';
@@ -176,7 +175,6 @@ export class Tab1Page implements OnInit, AfterViewInit {
     } else {
       this.notification.error({
         message: 'Sem conexão com a internet. Tente novamente mais tarde.',
-        orientation: PoToasterOrientation.Top,
       });
       this.animation.stop();
       this.syncText = 'Sincronizar';

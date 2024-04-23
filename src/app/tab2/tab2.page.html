@@ -1,49 +1,108 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Tab 2 </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="manualSync()" [disabled]="syncing" shape="round">
+        <span #iconSpin class="material-symbols-outlined">{{syncIcon}}</span>
+        {{syncText}}
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content>
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Tab 2</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <!-- <ion-button expand="full" (click)="loadHomePage()"
-    >Buscar informações</ion-button
+  <po-page-edit
+    [p-disable-submit]="!isLoaded || form.invalid"
+    [p-literals]="literals"
+    [p-title]="title"
+    (p-cancel)="cancel()"
+    (p-save)="isEdit ? edit() : onSubmit()"
   >
-  <ion-button expand="full" color="danger" (click)="clear()"
-    >Apagar informações</ion-button
-  >
-
-  <ion-card>
-    @if (loading) {
-    <ion-card-header>
-      <ion-card-title>
-        <ion-skeleton-text
-          [animated]="true"
-          style="width: 120px"
-        ></ion-skeleton-text>
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p><ion-skeleton-text [animated]="true"></ion-skeleton-text></p>
-      <p><ion-skeleton-text [animated]="true"></ion-skeleton-text></p>
-    </ion-card-content>
-    } @else if (conference) {
-    <ion-card-header>
-      <ion-card-title> {{ conference.title }} </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p>{{ conference.description }}</p>
-      <p>{{ conference.location }}</p>
-    </ion-card-content>
-    } @else {
-    <ion-card-content>
-      Conferência não encontrada e/ou não definida
-    </ion-card-content>
-    }
-  </ion-card> -->
+    <form
+      *ngIf="!isSuccessful"
+      class="form po-row"
+      [formGroup]="form"
+      (ngSubmit)="form.valid && onSubmit()"
+    >
+      <po-input
+        class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
+        name="input"
+        p-clean="true"
+        [p-help]="'Input Text Field'"
+        p-label="Input"
+      ></po-input>
+      <po-email
+        class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
+        name="email"
+        p-clean="true"
+        [p-help]="'Input Email Field'"
+        p-label="Email"
+      ></po-email>
+      <po-login
+        class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
+        name="login"
+        p-clean="true"
+        [p-help]="'Input Login Field'"
+        p-label="Login"
+      ></po-login>
+      <po-password
+        class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
+        name="password"
+        p-clean="true"
+        [p-help]="'Input Password Field'"
+        p-label="Password"
+      ></po-password>
+      <po-number
+        class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
+        name="number"
+        p-clean="true"
+        [p-help]="'Input Number Field'"
+        p-label="Number"
+      ></po-number>
+      <po-decimal
+        class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
+        name="decimal"
+        p-clean="true"
+        [p-help]="'Input Decimal Field'"
+        p-label="Decimal"
+      ></po-decimal>
+      <po-combo
+        class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
+        name="combo"
+        [p-cache]="true"
+        [p-clean]="true"
+        [p-filter-service]="comboApi"
+        [p-help]="'Combo Selection List'"
+        [p-infinite-scroll]="true"
+        p-label="Combo"
+      ></po-combo>
+      <po-multiselect
+        class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
+        name="multiselect"
+        [p-filter-service]="comboApi"
+        [p-help]="'Multiselect Selection List'"
+        p-label="Multiselect"
+      ></po-multiselect>
+      <po-radio-group
+        class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
+        name="radio-group"
+        [p-help]="'Radio Group Field'"
+        p-label="Radio Group"
+        [p-options]="radioOptions"
+      ></po-radio-group>
+      <po-checkbox-group
+        class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
+        name="checkbox-group"
+        [p-help]="'Checkbox Group Field'"
+        p-label="Checkbox Group"
+        [p-options]="checkboxOptions"
+      ></po-checkbox-group>
+    </form>
+  </po-page-edit>
 </ion-content>

@@ -1225,7 +1225,7 @@ po-overlay {
 \*------------------------------------*/
   --color-page-blocked-user-link-color: var(--color-action-default);
   --color-page-blocked-user-link-color-hover: var(--color-brand-01-dark);
-  --color-page-blocked-user-text-color: var(--color-neutral);
+  --color-page-blocked-user-text-color: var(--color-neutral-mid-40);
   --color-page--blocked-user-background-color: var(--color-neutral-light-05);
 
   /*------------------------------------*\
@@ -1241,8 +1241,8 @@ po-overlay {
     --color-neutral-light-05
   );
   --color-page-change-password-color-link: var(--color-action-default);
-  --color-page-change-password-color-text: var(--color-neutral);
-  --color-page-change-password-color-required: var(--color-neutral);
+  --color-page-change-password-color-text: var(--color-neutral-mid-40);
+  --color-page-change-password-color-required: var(--color-neutral-mid-40);
   --color-page-change-password-color-required-ok: var(--color-success-default);
   --color-page-change-password-color-required-minus: var(
     --color-black-alpha-30
@@ -1259,7 +1259,7 @@ po-overlay {
   /*------------------------------------*\
   PAGE HEADER
 \*------------------------------------*/
-  --color-page-header-color-title: var(--color-neutral);
+  --color-page-header-color-title: var(--color-neutral-mid-40);
   /*Deprecated v18.x.x utilizar --text-color */
 
   /*------------------------------------*\
