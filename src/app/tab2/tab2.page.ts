@@ -26,6 +26,7 @@ import {
 } from '@ionic/angular/standalone';
 import {
   PoCheckboxGroupOption,
+  PoComboComponent,
   PoContainerModule,
   PoFieldModule,
   PoNotificationService,
@@ -70,10 +71,14 @@ export class Tab2Page implements OnInit, AfterViewInit {
     this.tab2Model = this.poSync.getModel('conference');
     this.poSync.onSync().subscribe(() => this.loadSchema());
     this.loadSchema();
+    this.isOnline = this.network.getConnectionStatus().status;
   }
 
   private animation!: Animation;
   private animationCtrl = inject(AnimationController);
+  private baseItems: any[] = [];
+  private currentPage = 1;
+  private currentPageSize = 10;
   private info: any;
   private network = inject(PoNetworkService);
   private notification = inject(PoNotificationService);
@@ -81,9 +86,9 @@ export class Tab2Page implements OnInit, AfterViewInit {
   private router = inject(Router);
   private storage = inject(StorageService);
   private tab2Model: PoEntity;
-  public canCreate = false;
-  public canDelete = false;
-  public canUpdate = false;
+  public canCreate: boolean = false;
+  public canDelete: boolean = false;
+  public canUpdate: boolean = false;
   public checkboxOptions: PoCheckboxGroupOption[] = [
     {
       value: '1',
@@ -94,31 +99,35 @@ export class Tab2Page implements OnInit, AfterViewInit {
       label: 'Option 2',
     },
   ];
-  public comboApi = environment.apiUrl;
   public dummyArray = new Array(5);
   public error = null;
   public form = new FormGroup({
-    descricao: new FormControl(
-      '',
-      Validators.compose([
-        Validators.required,
-        Validators.maxLength(70),
-        Validators.pattern(/(.|\s)*\S(.|\s)*/),
-      ])
-    ),
+    input: new FormControl(''),
+    email: new FormControl(''),
+    login: new FormControl(''),
+    password: new FormControl(''),
+    number: new FormControl(''),
+    decimal: new FormControl(''),
+    combo: new FormControl(''),
+    multiselect: new FormControl(''),
+    radio_group: new FormControl(''),
+    checkbox_group: new FormControl(''),
   });
-  public getMore = true;
+  public getMore: boolean = true;
   public id!: number;
-  public isEdit = false;
-  public isLoaded = false;
-  public isLoading = false;
-  public isSuccessful = false;
+  public isEdit: boolean = false;
+  public isLoaded: boolean = false;
+  public isLoading: boolean = false;
+  public isOnline: boolean = false;
+  public isSuccessful: boolean = false;
   public items: any[] = [];
   public literals: PoPageEditLiterals = {
     save: 'Cadastrar',
   };
-  public loadingMore = false;
-  public loadingTable = false;
+  public loadingMore: boolean = false;
+  public loadingTable: boolean = false;
+  public comboApi: string =
+    'https://po-sample-conference.onrender.com/conferences';
   public radioOptions: PoRadioGroupOption[] = [
     {
       value: 1,
@@ -130,11 +139,11 @@ export class Tab2Page implements OnInit, AfterViewInit {
     },
   ];
   public syncIcon = 'sync';
-  public syncing = false;
-  public syncText = 'Sincronizar';
+  public syncing: boolean = false;
+  public syncText: string = 'Sincronizar';
   public tab2: any;
   public timeOut!: number;
-  public title = 'Form Tab2';
+  public title: string = 'Form Tab2';
   public username!: string;
 
   cancel(): void {
@@ -159,6 +168,7 @@ export class Tab2Page implements OnInit, AfterViewInit {
 
   loadMore() {
     this.loadingMore = true;
+    this.currentPage++;
     this.setItems(event);
     this.loadingMore = false;
   }
@@ -216,6 +226,7 @@ export class Tab2Page implements OnInit, AfterViewInit {
       .duration(600)
       .iterations(Infinity)
       .fromTo('transform', 'rotate(0deg)', 'rotate(-360deg)');
+    this.isLoaded = true;
   }
 
   ngOnInit() {
@@ -234,22 +245,49 @@ export class Tab2Page implements OnInit, AfterViewInit {
     // }
   }
 
-  onSubmit(): void {
-    if (this.form.invalid) return;
-    this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-      // this.service.post(this.form.value).subscribe({
-      //   next: (data) => {
-      //     this.cancel();
-      //     return;
-      //   },
-      //   error: () => {
-      //     return;
-      //   },
-      // });
-    }, this.timeOut);
+  paginate(array: any[], page: number, pageSize: number) {
+    return array.slice(0, page * pageSize);
   }
 
-  setItems(event: any) {}
+  onSubmit(): void {
+    if (this.form.invalid) return;
+    console.log(this.form.value);
+    // this.isLoading = true;
+    // setTimeout(() => {
+    // this.tab2Model.save(this.form.value).then(() => {
+    //   this.isLoading = false;
+    //   this.notification.success('Indicador salvo com sucesso!');
+    // });
+    // this.service.post(this.form.value).subscribe({
+    //   next: (data) => {
+    //     this.cancel();
+    //     return;
+    //   },
+    //   error: () => {
+    //     return;
+    //   },
+    //   complete: () => {
+    //     this.isLoading = false;
+    //     return;
+    //   },
+    // });
+    // }, this.timeOut);
+  }
+
+  setItems(event: any) {
+    this.loadingTable = true;
+    this.baseItems = this.tab2.items;
+    this.items = this.paginate(
+      this.baseItems,
+      this.currentPage,
+      this.currentPageSize
+    );
+    if (this.items.length === this.baseItems.length) {
+      this.getMore = false;
+    }
+    if (event) {
+      event = this.items.length === this.baseItems.length;
+    }
+    this.loadingTable = false;
+  }
 }

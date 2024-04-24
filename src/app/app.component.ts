@@ -14,6 +14,8 @@ import {
 import { conferenceSchema } from './conference-schema.constants';
 import { StorageService } from './auth/services/storage.service';
 import { PoModule, PoNotificationService } from '@po-ui/ng-components';
+import * as darkReader from 'darkreader';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -26,11 +28,35 @@ export class AppComponent {
     this.initializeApp();
   }
 
-  private storageService = inject(StorageService);
   private notification = inject(PoNotificationService);
   private network = inject(PoNetworkService);
+  private storageService = inject(StorageService);
+  private themeOptions = {
+    brightness: 100,
+    contrast: 90,
+    sepia: 0,
+  };
 
   async initializeApp() {
+    let theme = this.storageService.getTheme();
+    let preference = window.matchMedia('(prefers-color-scheme: dark)');
+    switch (theme) {
+      case 'dark':
+        darkReader.enable(this.themeOptions);
+        break;
+      case 'light':
+        darkReader.disable();
+        break;
+      default:
+        if (preference.matches) {
+          darkReader.enable(this.themeOptions);
+          this.storageService.saveTheme('dark');
+        } else {
+          darkReader.disable();
+          this.storageService.saveTheme('light');
+        }
+        break;
+    }
     await this.platform.ready();
     if (Capacitor.isNativePlatform()) {
       StatusBar.setOverlaysWebView({ overlay: true });

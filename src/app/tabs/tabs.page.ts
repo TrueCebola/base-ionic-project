@@ -1,4 +1,10 @@
-import { Component, EnvironmentInjector, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EnvironmentInjector,
+  OnInit,
+  inject,
+} from '@angular/core';
 import {
   IonTabs,
   IonTabBar,
@@ -11,6 +17,7 @@ import {
   IonFooter,
   IonToolbar,
   IonTitle,
+  IonRouterOutlet,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -19,6 +26,8 @@ import {
   square,
   logOutOutline,
   personCircleOutline,
+  moonOutline,
+  sunnyOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../auth/services/auth.service';
 import { StorageService } from '../auth/services/storage.service';
@@ -28,6 +37,7 @@ import {
   PoNotificationService,
   PoToasterOrientation,
 } from '@po-ui/ng-components';
+import * as darkReader from 'darkreader';
 
 @Component({
   selector: 'app-tabs',
@@ -35,6 +45,7 @@ import {
   styleUrls: ['tabs.page.scss'],
   standalone: true,
   imports: [
+    IonRouterOutlet,
     IonTitle,
     IonToolbar,
     IonFooter,
@@ -48,9 +59,17 @@ import {
     IonLabel,
   ],
 })
-export class TabsPage {
+export class TabsPage implements OnInit {
   constructor() {
-    addIcons({ triangle, ellipse, square, personCircleOutline, logOutOutline });
+    addIcons({
+      triangle,
+      ellipse,
+      square,
+      personCircleOutline,
+      logOutOutline,
+      sunnyOutline,
+      moonOutline,
+    });
   }
 
   private authService = inject(AuthService);
@@ -58,8 +77,24 @@ export class TabsPage {
   private notification = inject(PoNotificationService);
   private router = inject(Router);
   private storageService = inject(StorageService);
+  private theme!: string;
+  private themeIcon!: string;
+  private themeOptions = {
+    brightness: 100,
+    contrast: 90,
+    sepia: 0,
+  };
+  private themeText!: string;
 
   public actionSheetButtons = [
+    {
+      text: this.themeText,
+      role: 'destructive',
+      icon: this.themeIcon,
+      handler: () => {
+        this.themeChange();
+      },
+    },
     {
       text: 'Desconectar',
       role: 'destructive',
@@ -99,6 +134,47 @@ export class TabsPage {
         duration: 2000,
         message: 'Desconectou com sucesso!',
       });
+    }
+  }
+
+  ngOnInit() {
+    if (darkReader.isEnabled()) {
+      this.theme = 'escuro';
+      this.themeIcon = 'moon-outline';
+      this.themeText = `Mudar para tema claro`;
+      this.actionSheetButtons[0].icon = this.themeIcon;
+      this.actionSheetButtons[0].text = this.themeText;
+    } else {
+      this.theme = 'claro';
+      this.themeIcon = 'sunny-outline';
+      this.themeText = `Mudar para tema escuro`;
+      this.actionSheetButtons[0].icon = this.themeIcon;
+      this.actionSheetButtons[0].text = this.themeText;
+    }
+  }
+
+  themeChange() {
+    switch (this.theme) {
+      case 'escuro':
+        this.theme = 'claro';
+        this.themeIcon = 'sunny-outline';
+        this.themeText = `Mudar para tema escuro`;
+        this.actionSheetButtons[0].icon = this.themeIcon;
+        this.actionSheetButtons[0].text = this.themeText;
+        darkReader.disable();
+        this.storageService.saveTheme('light');
+        break;
+      case 'claro':
+        this.theme = 'escuro';
+        this.themeIcon = 'moon-outline';
+        this.themeText = `Mudar para tema claro`;
+        this.actionSheetButtons[0].icon = this.themeIcon;
+        this.actionSheetButtons[0].text = this.themeText;
+        darkReader.enable(this.themeOptions);
+        this.storageService.saveTheme('dark');
+        break;
+      default:
+        break;
     }
   }
 }

@@ -17,6 +17,14 @@ export class StorageService {
     window.sessionStorage.clear();
   }
 
+  public getTheme() {
+    const THEME = window.localStorage.getItem('theme')!;
+    if (THEME) {
+      return THEME;
+    }
+    return null;
+  }
+
   public getLocal(): any {
     const INFO = JSON.parse(window.localStorage.getItem('local-users')!);
     if (INFO) {
@@ -84,6 +92,20 @@ export class StorageService {
     } else {
       users = { usuarios: [data] };
       window.localStorage.setItem('local-users', JSON.stringify(users));
+    }
+  }
+
+  public saveTheme(theme: string) {
+    let currentTheme = window.matchMedia('(prefers-color-scheme: dark)');
+    if (window.localStorage.getItem('theme')) {
+      window.localStorage.removeItem('theme');
+      window.localStorage.setItem('theme', theme);
+    } else {
+      if (currentTheme) {
+        window.localStorage.setItem('theme', 'dark');
+      } else {
+        window.localStorage.setItem('theme', 'light');
+      }
     }
   }
 

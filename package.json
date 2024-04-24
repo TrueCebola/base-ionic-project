@@ -36,6 +36,7 @@
     "@po-ui/ng-templates": "^17.6.0",
     "@totvs/po-theme": "^17.3.0",
     "crypto-js": "^4.2.0",
+    "darkreader": "^4.9.83",
     "eruda": "^3.0.1",
     "ionicons": "^7.2.1",
     "jwt-decode": "^4.0.0",
