@@ -1,10 +1,15 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Tab 2 </ion-title>
+    <ion-title class="title po-font-subtitle"> Tab 2 </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="manualSync()" [disabled]="syncing" shape="round">
+      <ion-button
+        class="button"
+        (click)="manualSync()"
+        [disabled]="syncing"
+        shape="round"
+      >
         <span #iconSpin class="material-symbols-outlined">{{syncIcon}}</span>
-        {{syncText}}
+        <span class="po-font-text-large">&nbsp;{{syncText}}</span>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -13,7 +18,7 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
+      <ion-title class="title po-font-subtitle"> Tab 2 </ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -35,48 +40,57 @@
         formControlName="input"
         name="input"
         p-clean="true"
-        [p-help]="'Input Text Field'"
+        [p-help]="form.get('input')?.hasError('required') && form.get('input')?.touched ? 'Failed Requirement' : 'Input Text Field'"
         p-label="Input"
+        p-required="true"
+        [p-show-required]="true"
       ></po-input>
       <po-email
         class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
         formControlName="email"
         name="email"
         p-clean="true"
-        [p-help]="'Input Email Field'"
+        [p-help]="form.get('email')?.hasError('required') && form.get('email')?.touched ? 'Failed Requirement' : 'Input Email Field'"
         p-label="Email"
+        [p-optional]="true"
       ></po-email>
       <po-login
         class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
         formControlName="login"
         name="login"
         p-clean="true"
-        [p-help]="'Input Login Field'"
+        [p-help]="form.get('login')?.hasError('required') && form.get('login')?.touched ? 'Failed Requirement' : 'Input Login Field'"
         p-label="Login"
+        p-required="true"
+        [p-show-required]="true"
       ></po-login>
       <po-password
         class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
         formControlName="password"
         name="password"
         p-clean="true"
-        [p-help]="'Input Password Field'"
+        [p-help]="form.get('password')?.hasError('required') && form.get('password')?.touched ? 'Failed Requirement' : 'Input Password Field'"
         p-label="Password"
+        [p-optional]="true"
       ></po-password>
       <po-number
         class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
         formControlName="number"
         name="number"
         p-clean="true"
-        [p-help]="'Input Number Field'"
+        [p-help]="form.get('number')?.hasError('required') && form.get('number')?.touched ? 'Failed Requirement' : 'Input Number Field'"
         p-label="Number"
+        p-required="true"
+        [p-show-required]="true"
       ></po-number>
       <po-decimal
         class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
         formControlName="decimal"
         name="decimal"
         p-clean="true"
-        [p-help]="'Input Decimal Field'"
+        [p-help]="form.get('decimal')?.hasError('required') && form.get('decimal')?.touched ? 'Failed Requirement' : 'Input Decimal Field'"
         p-label="Decimal"
+        [p-optional]="true"
       ></po-decimal>
       <po-combo
         class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
@@ -87,9 +101,10 @@
         p-field-value="id"
         p-field-label="title"
         [p-filter-service]="isOnline ? comboApi : ''"
-        [p-help]="'Combo Selection List'"
+        [p-help]="form.get('combo')?.hasError('required') && form.get('combo')?.touched ? 'Failed Requirement' : 'Combo Selection List'"
         [p-infinite-scroll]="isOnline"
         p-label="Combo"
+        [p-optional]="true"
         [p-options]="isOnline ? [] : items"
       ></po-combo>
       <po-multiselect
@@ -98,24 +113,27 @@
         name="multiselect"
         p-field-value="id"
         p-field-label="title"
-        [p-help]="'Multiselect Selection List'"
+        [p-help]="form.get('multiselect')?.hasError('required') && form.get('multiselect')?.touched ? 'Failed Requirement' : 'Multiselect Selection List'"
         p-label="Multiselect"
+        [p-optional]="true"
         [p-options]="items"
       ></po-multiselect>
       <po-radio-group
         class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
         formControlName="radio_group"
         name="radio_group"
-        [p-help]="'Radio Group Field'"
+        [p-help]="form.get('radio_group')?.hasError('required') && form.get('radio_group')?.touched ? 'Failed Requirement' : 'Radio Group Field'"
         p-label="Radio Group"
+        [p-optional]="true"
         [p-options]="radioOptions"
       ></po-radio-group>
       <po-checkbox-group
         class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
         formControlName="checkbox_group"
         name="checkbox_group"
-        [p-help]="'Checkbox Group Field'"
+        [p-help]="form.get('checkbox_group')?.hasError('required') && form.get('checkbox_group')?.touched ? 'Failed Requirement' : 'Checkbox Group Field'"
         p-label="Checkbox Group"
+        [p-optional]="true"
         [p-options]="checkboxOptions"
       ></po-checkbox-group>
       <span style="height: 56px">&nbsp;</span>

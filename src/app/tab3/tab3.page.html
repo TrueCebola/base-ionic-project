@@ -1,15 +1,32 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Tab 3 </ion-title>
+    <ion-title class="title po-font-subtitle"> Tab 3 </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
+      <ion-title class="title po-font-subtitle"> Tab 3 </ion-title>
     </ion-toolbar>
   </ion-header>
 
+  <po-page-default>
+    @for(widget of widgets; track widget.value){
+    <div class="po-row">
+      <po-divider
+        class="po-xl-12 po-lg-12 po-md-12 po-sm-12"
+        [p-label]="widget.label"
+      ></po-divider>
+      @for(item of widget.subItems; track item.value){
+      <div class="po-xl-4 po-lg-4 po-md-6 po-sm-12">
+        <po-widget (p-click)="navigate(item.link)" [p-title]="item.label">
+          <div class="po-text-center">Criado em: {{ item.dateAdd }}</div>
+        </po-widget>
+      </div>
+      }
+    </div>
+    }
+  </po-page-default>
   <!-- <app-explore-container name="Tab 3 page"></app-explore-container> -->
 </ion-content>

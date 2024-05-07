@@ -37,7 +37,7 @@ import {
 } from '@po-ui/ng-components';
 import { PoEntity, PoNetworkService, PoSyncService } from '@po-ui/ng-sync';
 import { StorageService } from '../auth/services/storage.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { environment } from 'src/environments/environment';
 
@@ -79,10 +79,12 @@ export class Tab2Page implements OnInit, AfterViewInit {
   private baseItems: any[] = [];
   private currentPage = 1;
   private currentPageSize = 10;
+  private tab2Edit: any;
   private info: any;
   private network = inject(PoNetworkService);
   private notification = inject(PoNotificationService);
   private poSync = inject(PoSyncService);
+  private route = inject(ActivatedRoute);
   private router = inject(Router);
   private storage = inject(StorageService);
   private tab2Model: PoEntity;
@@ -102,11 +104,11 @@ export class Tab2Page implements OnInit, AfterViewInit {
   public dummyArray = new Array(5);
   public error = null;
   public form = new FormGroup({
-    input: new FormControl(''),
+    input: new FormControl('', Validators.compose([Validators.required])),
     email: new FormControl(''),
-    login: new FormControl(''),
+    login: new FormControl('', Validators.compose([Validators.required])),
     password: new FormControl(''),
-    number: new FormControl(''),
+    number: new FormControl('', Validators.compose([Validators.required])),
     decimal: new FormControl(''),
     combo: new FormControl(''),
     multiselect: new FormControl(''),
@@ -147,6 +149,7 @@ export class Tab2Page implements OnInit, AfterViewInit {
   public username!: string;
 
   cancel(): void {
+    this.form.reset();
     this.router.navigate(['tabs/tab1']);
   }
 
@@ -155,15 +158,77 @@ export class Tab2Page implements OnInit, AfterViewInit {
   }
 
   edit(): void {
-    // this.service.put(this.form.value, this.id).subscribe({
-    //   next: () => {
-    //     this.cancel();
-    //     return;
-    //   },
-    //   error: () => {
-    //     return;
-    //   },
-    // });
+    if (this.form.invalid) return;
+    this.isLoading = true;
+    setTimeout(() => {
+      // this.tab2Model.save(this.form.value).then(() => {
+      this.isLoading = false;
+      this.notification.success({
+        message: 'Alterações aplicadas com sucesso!',
+        duration: 1500,
+      });
+      this.cancel();
+      // });
+      // this.service.put(this.form.value, this.id).subscribe({
+      //   next: () => {
+      //     this.cancel();
+      //     return;
+      //   },
+      //   error: () => {
+      //     return;
+      //   },
+      //   complete: () => {
+      //     this.isLoading = false;
+      //     return;
+      //   },
+      // });
+    }, this.timeOut);
+  }
+
+  ionViewDidEnter() {
+    this.route.queryParams.subscribe((params) => (this.id = params['id']));
+    if (this.id) {
+      this.loadEdit(this.id);
+      this.literals = {
+        save: 'Aplicar',
+      };
+      this.isEdit = true;
+      this.title = 'Editar Tab2';
+      // this.form.patchValue({
+      //   input: edit,
+      // });
+      // this.service.get(this.id).subscribe({
+      //   next: (data) => {
+      //     this.registro.patchValue({
+      //       funcionario: data.items[0].label,
+      //       funcao: data.items[0].funcao,
+      //       volante: data.items[0].volante,
+      //       turno: data.items[0].turno,
+      //       dateStart: data.items[0].dateStart,
+      //       dateEnd: data.items[0].dateEnd,
+      //     });
+      //   },
+      //   error: () => {
+      //     return;
+      //   },
+      // });
+    } else {
+      this.literals = {
+        save: 'Cadastrar',
+      };
+      this.isEdit = false;
+      this.title = 'Form Tab2';
+      this.form.reset();
+    }
+  }
+
+  async loadEdit(id: number) {
+    this.tab2Edit = await this.tab2Model.findById(id).exec();
+    this.form.patchValue({
+      input: this.tab2Edit.title,
+      login: this.tab2Edit.description,
+      number: this.tab2Edit.id,
+    });
   }
 
   loadMore() {
@@ -190,10 +255,16 @@ export class Tab2Page implements OnInit, AfterViewInit {
         .sync()
         .then(() => {
           this.notification.success({
-            message: 'Sincronização concluída!',
+            message: 'Sincronização concluída com sucesso!',
+            duration: 2000,
           });
           this.animation.stop();
-          this.syncText = 'Sincronizar';
+          this.syncIcon = 'sync_saved_locally';
+          this.syncText = 'Sincronizado';
+          setTimeout(() => {
+            this.syncIcon = 'sync';
+            this.syncText = 'Sincronizar';
+          }, 2000);
           this.syncing = false;
           this.loadSchema();
         })
@@ -209,7 +280,8 @@ export class Tab2Page implements OnInit, AfterViewInit {
         });
     } else {
       this.notification.error({
-        message: 'Sem conexão com a internet. Tente novamente mais tarde.',
+        message:
+          'Sem conexão com a internet. Tente novamente assim que tiver uma conexão.',
       });
       this.animation.stop();
       this.syncText = 'Sincronizar';
@@ -251,27 +323,31 @@ export class Tab2Page implements OnInit, AfterViewInit {
 
   onSubmit(): void {
     if (this.form.invalid) return;
-    console.log(this.form.value);
-    // this.isLoading = true;
-    // setTimeout(() => {
-    // this.tab2Model.save(this.form.value).then(() => {
-    //   this.isLoading = false;
-    //   this.notification.success('Indicador salvo com sucesso!');
-    // });
-    // this.service.post(this.form.value).subscribe({
-    //   next: (data) => {
-    //     this.cancel();
-    //     return;
-    //   },
-    //   error: () => {
-    //     return;
-    //   },
-    //   complete: () => {
-    //     this.isLoading = false;
-    //     return;
-    //   },
-    // });
-    // }, this.timeOut);
+    this.isLoading = true;
+    this.form.reset();
+    setTimeout(() => {
+      // this.tab2Model.save(this.form.value).then(() => {
+      this.isLoading = false;
+      this.notification.success({
+        message: 'Form cadastrado com sucesso!',
+        duration: 1500,
+      });
+      // this.cancel();
+      // });
+      // this.service.post(this.form.value).subscribe({
+      //   next: (data) => {
+      //     this.cancel();
+      //     return;
+      //   },
+      //   error: () => {
+      //     return;
+      //   },
+      //   complete: () => {
+      //     this.isLoading = false;
+      //     return;
+      //   },
+      // });
+    }, this.timeOut);
   }
 
   setItems(event: any) {

@@ -1,10 +1,15 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Tab 1 </ion-title>
+    <ion-title class="title po-font-subtitle"> Tab 1 </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="manualSync()" [disabled]="syncing" shape="round">
+      <ion-button
+        class="button"
+        (click)="manualSync()"
+        [disabled]="syncing"
+        shape="round"
+      >
         <span #iconSpin class="material-symbols-outlined">{{syncIcon}}</span>
-        {{syncText}}
+        <span class="po-font-text-large">&nbsp;{{syncText}}</span>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -13,7 +18,7 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title class="title po-font-subtitle"> Tab 1 </ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -50,6 +55,7 @@
             p-tooltip="Excluir"
             p-tooltip-position="top"
             style="font-size: 21px"
+            (click)="openExclusion(row.value)"
           >
             delete
           </span>
@@ -61,6 +67,7 @@
             p-tooltip="Editar"
             p-tooltip-position="top"
             style="font-size: 21px"
+            (click)="editar(row.id)"
           >
             edit
           </span>
@@ -80,7 +87,7 @@
     </ng-template>
   </po-modal> -->
 
-  <!-- <po-modal
+  <po-modal
     #confirmExclusion
     p-title="Excluir"
     [p-primary-action]="{action: exclusion.bind(this), label: 'Excluir',}"
@@ -91,5 +98,5 @@
   }"
   >
     <span>Deseja realmente excluir este item?</span>
-  </po-modal> -->
+  </po-modal>
 </ion-content>

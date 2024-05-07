@@ -34,6 +34,7 @@ import { StorageService } from '../auth/services/storage.service';
 import { Router } from '@angular/router';
 import { PoNetworkService } from '@po-ui/ng-sync';
 import {
+  PoDialogService,
   PoNotificationService,
   PoToasterOrientation,
 } from '@po-ui/ng-components';
@@ -73,6 +74,7 @@ export class TabsPage implements OnInit {
   }
 
   private authService = inject(AuthService);
+  private dialog = inject(PoDialogService);
   private network = inject(PoNetworkService);
   private notification = inject(PoNotificationService);
   private router = inject(Router);
@@ -87,20 +89,25 @@ export class TabsPage implements OnInit {
   private themeText!: string;
 
   public actionSheetButtons = [
-    {
-      text: this.themeText,
-      role: 'destructive',
-      icon: this.themeIcon,
-      handler: () => {
-        this.themeChange();
-      },
-    },
+    // {
+    //   text: this.themeText,
+    //   role: 'destructive',
+    //   icon: this.themeIcon,
+    //   handler: () => {
+    //     this.themeChange();
+    //   },
+    // },
     {
       text: 'Desconectar',
       role: 'destructive',
       icon: 'log-out-outline',
       handler: () => {
-        this.logout();
+        this.dialog.confirm({
+          confirm: this.logout.bind(this),
+          literals: { confirm: 'Desconectar' },
+          message: 'Deseja realmente desconectar do aplicativo?',
+          title: 'Desconectar',
+        });
       },
     },
   ];
@@ -138,19 +145,21 @@ export class TabsPage implements OnInit {
   }
 
   ngOnInit() {
-    if (darkReader.isEnabled()) {
-      this.theme = 'escuro';
-      this.themeIcon = 'moon-outline';
-      this.themeText = `Mudar para tema claro`;
-      this.actionSheetButtons[0].icon = this.themeIcon;
-      this.actionSheetButtons[0].text = this.themeText;
-    } else {
-      this.theme = 'claro';
-      this.themeIcon = 'sunny-outline';
-      this.themeText = `Mudar para tema escuro`;
-      this.actionSheetButtons[0].icon = this.themeIcon;
-      this.actionSheetButtons[0].text = this.themeText;
-    }
+    // if (darkReader.isEnabled()) {
+    //   this.theme = 'escuro';
+    //   this.themeIcon = 'moon-outline';
+    //   this.themeText = `Mudar para tema claro`;
+    //   this.actionSheetButtons[0].icon = this.themeIcon;
+    //   this.actionSheetButtons[0].text = this.themeText;
+    //   document.querySelector('body')?.classList.add('dark');
+    // } else {
+    //   this.theme = 'claro';
+    //   this.themeIcon = 'sunny-outline';
+    //   this.themeText = `Mudar para tema escuro`;
+    //   this.actionSheetButtons[0].icon = this.themeIcon;
+    //   this.actionSheetButtons[0].text = this.themeText;
+    //   document.querySelector('body')?.classList.remove('dark');
+    // }
   }
 
   themeChange() {
@@ -161,6 +170,7 @@ export class TabsPage implements OnInit {
         this.themeText = `Mudar para tema escuro`;
         this.actionSheetButtons[0].icon = this.themeIcon;
         this.actionSheetButtons[0].text = this.themeText;
+        document.querySelector('body')?.classList.remove('dark');
         darkReader.disable();
         this.storageService.saveTheme('light');
         break;
@@ -170,7 +180,9 @@ export class TabsPage implements OnInit {
         this.themeText = `Mudar para tema claro`;
         this.actionSheetButtons[0].icon = this.themeIcon;
         this.actionSheetButtons[0].text = this.themeText;
+        document.querySelector('body')?.classList.add('dark');
         darkReader.enable(this.themeOptions);
+        console.log(darkReader.exportGeneratedCSS());
         this.storageService.saveTheme('dark');
         break;
       default:

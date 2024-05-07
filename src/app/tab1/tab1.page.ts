@@ -19,6 +19,7 @@ import {
 } from '@ionic/angular/standalone';
 import {
   PoDisclaimerGroup,
+  PoModalComponent,
   PoModalModule,
   PoNotificationService,
   PoPageAction,
@@ -36,6 +37,7 @@ import { cellularOutline, wifiOutline } from 'ionicons/icons';
 import { environment } from 'src/environments/environment';
 import { StorageService } from '../auth/services/storage.service';
 import { NgTemplateOutlet } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab1',
@@ -58,6 +60,9 @@ import { NgTemplateOutlet } from '@angular/common';
   ],
 })
 export class Tab1Page implements OnInit, AfterViewInit {
+  @ViewChild('confirmExclusion', { static: true })
+  exclusionModal!: PoModalComponent;
+  @ViewChild('export', { static: true }) exportModal!: PoModalComponent;
   @ViewChild('iconSpin', { read: ElementRef })
   iconSpin!: ElementRef<HTMLSpanElement>;
 
@@ -73,10 +78,13 @@ export class Tab1Page implements OnInit, AfterViewInit {
   private baseItems: any[] = [];
   private currentPage = 1;
   private currentPageSize = 10;
+  private exclusionId!: number;
   private info: any;
   private network = inject(PoNetworkService);
   private notification = inject(PoNotificationService);
   private poSync = inject(PoSyncService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private storage = inject(StorageService);
   private tab1Model: PoEntity;
   public actions: PoPageAction[] = [
@@ -125,10 +133,52 @@ export class Tab1Page implements OnInit, AfterViewInit {
     this.items = [];
   }
 
+  closeExclusion() {
+    this.exclusionModal.close();
+  }
+
+  closeExport() {
+    this.exportModal.close();
+  }
+
   disclaimerChange(change: any) {
     if (change.removedDisclaimer) {
       this.quickSearch('');
     }
+  }
+
+  editar(id: number) {
+    this.router.navigate([`tabs/tab2`], {
+      queryParams: { id: id },
+    });
+  }
+
+  excluir(id: number) {
+    this.closeExclusion();
+    this.notification.success({
+      message: 'Item excluído com sucesso!',
+      duration: 1500,
+    });
+    // this.service.delete(id).subscribe({
+    //   next: (data) => {
+    //     this.serviceApi = '';
+    //     setTimeout(() => {
+    //       this.serviceApi = this.baseApi;
+    //     }, 100);
+    //     return;
+    //   },
+    //   error: (err) => {
+    //     this.serviceApi = '';
+    //     setTimeout(() => {
+    //       this.serviceApi = this.baseApi;
+    //     }, 100);
+    //     return;
+    //   },
+    // });
+  }
+
+  exclusion(): void {
+    this.excluir(this.exclusionId);
   }
 
   loadMore() {
@@ -155,10 +205,16 @@ export class Tab1Page implements OnInit, AfterViewInit {
         .sync()
         .then(() => {
           this.notification.success({
-            message: 'Sincronização concluída!',
+            message: 'Sincronização concluída com sucesso!',
+            duration: 2000,
           });
           this.animation.stop();
-          this.syncText = 'Sincronizar';
+          this.syncIcon = 'sync_saved_locally';
+          this.syncText = 'Sincronizado';
+          setTimeout(() => {
+            this.syncIcon = 'sync';
+            this.syncText = 'Sincronizar';
+          }, 2000);
           this.syncing = false;
           this.loadSchema();
         })
@@ -207,6 +263,11 @@ export class Tab1Page implements OnInit, AfterViewInit {
     // } else {
     //   this.columns[0].visible = false;
     // }
+  }
+
+  openExclusion(id: number) {
+    this.exclusionId = id;
+    this.exclusionModal.open();
   }
 
   paginate(array: any[], page: number, pageSize: number) {
