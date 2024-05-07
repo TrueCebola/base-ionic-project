@@ -38,25 +38,29 @@ export class AppComponent {
   };
 
   async initializeApp() {
-    let theme = this.storageService.getTheme();
-    let preference = window.matchMedia('(prefers-color-scheme: dark)');
-    switch (theme) {
-      case 'dark':
-        darkReader.enable(this.themeOptions);
-        break;
-      case 'light':
-        darkReader.disable();
-        break;
-      default:
-        if (preference.matches) {
-          darkReader.enable(this.themeOptions);
-          this.storageService.saveTheme('dark');
-        } else {
-          darkReader.disable();
-          this.storageService.saveTheme('light');
-        }
-        break;
-    }
+    // let theme = this.storageService.getTheme();
+    // let preference = window.matchMedia('(prefers-color-scheme: dark)');
+    // switch (theme) {
+    //   case 'dark':
+    //     document.querySelector('body')?.classList.add('dark');
+    //     darkReader.enable(this.themeOptions);
+    //     break;
+    //   case 'light':
+    //     document.querySelector('body')?.classList.remove('dark');
+    //     darkReader.disable();
+    //     break;
+    //   default:
+    //     if (preference.matches) {
+    //       document.querySelector('body')?.classList.add('dark');
+    //       darkReader.enable(this.themeOptions);
+    //       this.storageService.saveTheme('dark');
+    //     } else {
+    //       document.querySelector('body')?.classList.remove('dark');
+    //       darkReader.disable();
+    //       this.storageService.saveTheme('light');
+    //     }
+    //     break;
+    // }
     await this.platform.ready();
     if (Capacitor.isNativePlatform()) {
       StatusBar.setOverlaysWebView({ overlay: true });
