@@ -1,3 +1,109 @@
+/**
+ * @theme: Totvs Default Theme
+ **/
+
+/**
+ * CONTENTS
+ *
+ * COMMONS
+ * Common.........................configurações.
+ * Color..........................variáveis globais de cores.
+ * Color Palette..................variáveis da peleta de cores.
+ * Font...........................variáveis de fontes.
+ *
+ * COMPONENTS
+ * Accordion......................variáveis do Accordion.
+ * Accordion Manager..............variáveis do Acoordion Manager.
+ * Accordion Item Header..........variáveis do Accordion Item Header.
+ * Accordion Item Header Button...variáveis do Accordion Item Header Button.
+ * Avatar.........................variáveis do Avatar.
+ * Button.........................variáveis do Button.
+ * Badge..........................variáveis do Badge.
+ * Breadcrumb.....................variáveis do Breadcrumb.
+ * Button Group...................variáveis do Button Group.
+ * Calendar.......................variáveis do Calendar.
+ * Chart..........................variáveis do Chart.
+ * Checkbox Group.................variáveis do Checkbox Group.
+ * Combo..........................variáveis do Combo.
+ * Container......................variáveis do Container.
+ * Datepicker Range...............variáveis do Datepicker Range.
+ * Disclaimer.....................variáveis do Disclaimer.
+ * Disclaimer Group...............variáveis do Disclaimer Group.
+ * Divider........................variáveis do Divider.
+ * Dropdown.......................variáveis do Dropdown.
+ * Dynamic........................variáveis do Dynamic.
+ * Field Container Bottom.........variáveis do Field Container Bottom.
+ * Field Icon.....................variáveis do Field Icon.
+ * Gauge..........................variáveis do Gauge.
+ * Info...........................variáveis do Info.
+ * Input..........................variáveis do Input.
+ * Itemlist.......................variáveis do Itemlist
+ * Label..........................variáveis do Label.
+ * Link...........................variáveis do Link.
+ * Listbox........................variáveis do listbox.
+ * List View......................variáveis do List View.
+ * Loading........................variáveis do Loading.
+ * Loading Overlay................variáveis do Loading Overlay.
+ * Lookup.........................variáveis do Lookup.
+ * Menu...........................variáveis do Menu.
+ * Menu Item......................variáveis do Menu Item.
+ * Menu Filter....................variáveis do Menu Filter.
+ * Menu Panel.....................variáveis do Menu Panel.
+ * Modal..........................variáveis do Modal.
+ * Modal Password Recovery........variáveis do Modal Password Recovery.
+ * Multiselect....................variáveis do Multiselect.
+ * Navbar.........................variáveis do Navbar.
+ * Navbar Action..................variáveis do Navbar Action.
+ * Navbar Action Popup............variáveis do Navbar Action Popup.
+ * Navbar Item....................variáveis do Navbar Item.
+ * Navbar Item Navigation.........variáveis do Navbar Item Navigation.
+ * Overlay........................variáveis do Overlay.
+ * Page...........................variáveis do Page.
+ * Page Background................variáveis do Page Background.
+ * Page Blocked User..............variáveis do Page Blocked User.
+ * Page Change Password...........variáveis do Page Change Password.
+ * Page Content...................variáveis do Page Content.
+ * Page Header................ ...variáveis do Page Header.
+ * Page List......................variáveis do Page List.
+ * Page Login.....................variáveis do Page Login.
+ * Page Slide.....................variáveis do Page Slide.
+ * Popover........................variáveis do Popover.
+ * Popup..........................variáveis do Popup.
+ * Popup Item List................variáveis do Popup Item List.
+ * Progress.......................variáveis do Progress.
+ * Progress Bar...................variáveis do Progress Bar.
+ * Radio..........................variáveis do Radio.
+ * Rich Text......................variáveis do Rich Text.
+ * Search.........................variáveis do Search.
+ * Select.........................variáveis do Select.
+ * Slide..........................variáveis do Slide.
+ * Stepper........................variáveis do Stepper.
+ * Switch.........................variáveis do Switch.
+ * Tab Button.....................variáveis do Tab Button.
+ * Tab Dropdown...................variáveis do Tab Dropdown.
+ * Table..........................variáveis do Table.
+ * Table Column Link..............variáveis do Table Column Link.
+ * Table List Manager.............variáveis do Table List Manager.
+ * Tag............................variáveis do Tag.
+ * Textarea.......................variáveis do Textarea.
+ * Toolbar........................variáveis do Toolbar.
+ * Tooltip........................variáveis do Tooltip.
+ * Tree View......................variáveis do Tree View.
+ * Upload.........................variáveis do Upload.
+ * Widget.........................variáveis do Widget.
+ *
+ * SERVICES
+ * Toaster........................variáveis do Toaster.
+ */
+
+/*------------------------------------*\
+  COMMONS
+\*------------------------------------*/
+
+/*------------------------------------*\
+  COMMON
+\*------------------------------------*/
+
 :root {
   --color-wrapper-menu-panel-color-background: var(--color-neutral-light-00);
   --color-overlay-background-color-overlay: var(

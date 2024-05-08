@@ -15,6 +15,7 @@ import {
 } from '@po-ui/ng-components';
 import { StorageService } from '../auth/services/storage.service';
 import { Router } from '@angular/router';
+import { ThemeService } from '../shared/services/theme.service';
 
 @Component({
   selector: 'app-tab3',
@@ -41,7 +42,16 @@ export class Tab3Page implements OnInit {
   private isLoggedIn = false;
   private router = inject(Router);
   private storageService = inject(StorageService);
+  private themeService = inject(ThemeService);
   public widgets: any[] = [];
+
+  ionViewWillEnter() {
+    if (this.storageService.getTheme() === 'dark') {
+      this.themeService.applyDark();
+    } else {
+      this.themeService.removeDark();
+    }
+  }
 
   /**
    * Navigates to the specified path.

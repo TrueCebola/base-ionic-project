@@ -16,6 +16,7 @@ import { StorageService } from './auth/services/storage.service';
 import { PoModule, PoNotificationService } from '@po-ui/ng-components';
 import * as darkReader from 'darkreader';
 import { BehaviorSubject } from 'rxjs';
+import { ThemeService } from './shared/services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -36,31 +37,26 @@ export class AppComponent {
     contrast: 90,
     sepia: 0,
   };
+  private themeService = inject(ThemeService);
 
   async initializeApp() {
-    // let theme = this.storageService.getTheme();
-    // let preference = window.matchMedia('(prefers-color-scheme: dark)');
-    // switch (theme) {
-    //   case 'dark':
-    //     document.querySelector('body')?.classList.add('dark');
-    //     darkReader.enable(this.themeOptions);
-    //     break;
-    //   case 'light':
-    //     document.querySelector('body')?.classList.remove('dark');
-    //     darkReader.disable();
-    //     break;
-    //   default:
-    //     if (preference.matches) {
-    //       document.querySelector('body')?.classList.add('dark');
-    //       darkReader.enable(this.themeOptions);
-    //       this.storageService.saveTheme('dark');
-    //     } else {
-    //       document.querySelector('body')?.classList.remove('dark');
-    //       darkReader.disable();
-    //       this.storageService.saveTheme('light');
-    //     }
-    //     break;
-    // }
+    let theme = this.storageService.getTheme();
+    let preference = window.matchMedia('(prefers-color-scheme: dark)');
+    switch (theme) {
+      case 'dark':
+        this.themeService.applyDark();
+        break;
+      case 'light':
+        this.themeService.removeDark();
+        break;
+      default:
+        if (preference.matches) {
+          this.themeService.applyDark();
+        } else {
+          this.themeService.removeDark();
+        }
+        break;
+    }
     await this.platform.ready();
     if (Capacitor.isNativePlatform()) {
       StatusBar.setOverlaysWebView({ overlay: true });

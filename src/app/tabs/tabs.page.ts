@@ -35,10 +35,12 @@ import { Router } from '@angular/router';
 import { PoNetworkService } from '@po-ui/ng-sync';
 import {
   PoDialogService,
+  PoLoadingModule,
   PoNotificationService,
   PoToasterOrientation,
 } from '@po-ui/ng-components';
 import * as darkReader from 'darkreader';
+import { ThemeService } from '../shared/services/theme.service';
 
 @Component({
   selector: 'app-tabs',
@@ -58,9 +60,10 @@ import * as darkReader from 'darkreader';
     IonTabButton,
     IonIcon,
     IonLabel,
+    PoLoadingModule,
   ],
 })
-export class TabsPage implements OnInit {
+export class TabsPage {
   constructor() {
     addIcons({
       triangle,
@@ -86,17 +89,24 @@ export class TabsPage implements OnInit {
     contrast: 90,
     sepia: 0,
   };
+  private themeService = inject(ThemeService);
   private themeText!: string;
-
   public actionSheetButtons = [
-    // {
-    //   text: this.themeText,
-    //   role: 'destructive',
-    //   icon: this.themeIcon,
-    //   handler: () => {
-    //     this.themeChange();
-    //   },
-    // },
+    {
+      text: this.themeText,
+      role: 'destructive',
+      icon: this.themeIcon,
+      handler: () => {
+        this.theme === 'escuro'
+          ? this.themeChange('claro')
+          : this.themeChange('escuro');
+        this.notification.information({
+          message:
+            'Para o tema ser alterado corretamente, reinicie o aplicativo.',
+          duration: 4000,
+        });
+      },
+    },
     {
       text: 'Desconectar',
       role: 'destructive',
@@ -111,8 +121,16 @@ export class TabsPage implements OnInit {
       },
     },
   ];
-
   public environmentInjector = inject(EnvironmentInjector);
+  public isLoading = false;
+
+  ionViewWillEnter() {
+    if (this.storageService.getTheme() === 'dark') {
+      this.themeChange('escuro');
+    } else {
+      this.themeChange('claro');
+    }
+  }
 
   logout() {
     let networkStatus = this.network.getConnectionStatus().status;
@@ -144,49 +162,30 @@ export class TabsPage implements OnInit {
     }
   }
 
-  ngOnInit() {
-    // if (darkReader.isEnabled()) {
-    //   this.theme = 'escuro';
-    //   this.themeIcon = 'moon-outline';
-    //   this.themeText = `Mudar para tema claro`;
-    //   this.actionSheetButtons[0].icon = this.themeIcon;
-    //   this.actionSheetButtons[0].text = this.themeText;
-    //   document.querySelector('body')?.classList.add('dark');
-    // } else {
-    //   this.theme = 'claro';
-    //   this.themeIcon = 'sunny-outline';
-    //   this.themeText = `Mudar para tema escuro`;
-    //   this.actionSheetButtons[0].icon = this.themeIcon;
-    //   this.actionSheetButtons[0].text = this.themeText;
-    //   document.querySelector('body')?.classList.remove('dark');
-    // }
-  }
-
-  themeChange() {
-    switch (this.theme) {
-      case 'escuro':
-        this.theme = 'claro';
-        this.themeIcon = 'sunny-outline';
+  themeChange(theme: string) {
+    this.isLoading = true;
+    switch (theme) {
+      case 'claro':
+        this.theme = theme;
+        this.themeIcon = 'moon-outline';
         this.themeText = `Mudar para tema escuro`;
         this.actionSheetButtons[0].icon = this.themeIcon;
         this.actionSheetButtons[0].text = this.themeText;
-        document.querySelector('body')?.classList.remove('dark');
-        darkReader.disable();
-        this.storageService.saveTheme('light');
+        this.themeService.removeDark();
+        // darkReader.disable();
         break;
-      case 'claro':
-        this.theme = 'escuro';
-        this.themeIcon = 'moon-outline';
+      case 'escuro':
+        this.theme = theme;
+        this.themeIcon = 'sunny-outline';
         this.themeText = `Mudar para tema claro`;
         this.actionSheetButtons[0].icon = this.themeIcon;
         this.actionSheetButtons[0].text = this.themeText;
-        document.querySelector('body')?.classList.add('dark');
-        darkReader.enable(this.themeOptions);
-        console.log(darkReader.exportGeneratedCSS());
-        this.storageService.saveTheme('dark');
+        this.themeService.applyDark();
+        // darkReader.enable(this.themeOptions);
         break;
       default:
         break;
     }
+    this.isLoading = false;
   }
 }

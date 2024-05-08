@@ -38,6 +38,7 @@ import { environment } from 'src/environments/environment';
 import { StorageService } from '../auth/services/storage.service';
 import { NgTemplateOutlet } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ThemeService } from '../shared/services/theme.service';
 
 @Component({
   selector: 'app-tab1',
@@ -87,6 +88,7 @@ export class Tab1Page implements OnInit, AfterViewInit {
   private router = inject(Router);
   private storage = inject(StorageService);
   private tab1Model: PoEntity;
+  private themeService = inject(ThemeService);
   public actions: PoPageAction[] = [
     {
       label: 'Novo',
@@ -179,6 +181,14 @@ export class Tab1Page implements OnInit, AfterViewInit {
 
   exclusion(): void {
     this.excluir(this.exclusionId);
+  }
+
+  ionViewWillEnter() {
+    if (this.storage.getTheme() === 'dark') {
+      this.themeService.applyDark();
+    } else {
+      this.themeService.removeDark();
+    }
   }
 
   loadMore() {
