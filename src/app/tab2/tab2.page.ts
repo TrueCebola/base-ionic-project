@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  HostListener,
   inject,
   OnInit,
   ViewChild,
@@ -25,6 +26,7 @@ import {
   Animation,
 } from '@ionic/angular/standalone';
 import {
+  PoButtonModule,
   PoCheckboxGroupOption,
   PoComboComponent,
   PoContainerModule,
@@ -40,6 +42,8 @@ import { StorageService } from '../auth/services/storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { environment } from 'src/environments/environment';
+import SignaturePad from 'signature_pad';
+import { ThemeService } from '../shared/services/theme.service';
 
 @Component({
   selector: 'app-tab2',
@@ -61,11 +65,13 @@ import { environment } from 'src/environments/environment';
     FormsModule,
     ReactiveFormsModule,
     NgIf,
+    PoButtonModule,
   ],
 })
 export class Tab2Page implements OnInit, AfterViewInit {
   @ViewChild('iconSpin', { read: ElementRef })
   iconSpin!: ElementRef<HTMLSpanElement>;
+  @ViewChild('canvas') canvasEl!: ElementRef;
 
   constructor() {
     this.tab2Model = this.poSync.getModel('conference');
@@ -79,15 +85,19 @@ export class Tab2Page implements OnInit, AfterViewInit {
   private baseItems: any[] = [];
   private currentPage = 1;
   private currentPageSize = 10;
-  private tab2Edit: any;
   private info: any;
   private network = inject(PoNetworkService);
   private notification = inject(PoNotificationService);
   private poSync = inject(PoSyncService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private signatureImg!: string;
+  private signatureNeeded!: boolean;
+  private signaturePad!: SignaturePad;
   private storage = inject(StorageService);
+  private tab2Edit: any;
   private tab2Model: PoEntity;
+  private themeService = inject(ThemeService);
   public canCreate: boolean = false;
   public canDelete: boolean = false;
   public canUpdate: boolean = false;
@@ -114,6 +124,8 @@ export class Tab2Page implements OnInit, AfterViewInit {
     multiselect: new FormControl(''),
     radio_group: new FormControl(''),
     checkbox_group: new FormControl(''),
+    switch: new FormControl(''),
+    signature: new FormControl('', Validators.required),
   });
   public getMore: boolean = true;
   public id!: number;
@@ -155,6 +167,30 @@ export class Tab2Page implements OnInit, AfterViewInit {
 
   clean() {
     this.form.reset();
+  }
+
+  drawStart($event: TouchEvent) {}
+
+  drawMoved($event: TouchEvent) {}
+
+  drawClear() {
+    this.form.controls.signature.reset();
+    this.signaturePad.clear();
+  }
+
+  drawSave() {
+    const base64Data = this.signaturePad.toDataURL();
+    this.signatureImg = base64Data;
+    this.signatureNeeded = this.signaturePad.isEmpty();
+    if (!this.signatureNeeded) {
+      this.signatureNeeded = false;
+      this.form.controls.signature.patchValue(this.signatureImg);
+    } else {
+      this.notification.warning({
+        message: 'O campo de assinatura não pode ser vazio!',
+        duration: 4000,
+      });
+    }
   }
 
   edit(): void {
@@ -219,6 +255,14 @@ export class Tab2Page implements OnInit, AfterViewInit {
       this.isEdit = false;
       this.title = 'Form Tab2';
       this.form.reset();
+    }
+  }
+
+  ionViewWillEnter() {
+    if (this.storage.getTheme() === 'dark') {
+      this.themeService.applyDark();
+    } else {
+      this.themeService.removeDark();
     }
   }
 
@@ -292,6 +336,11 @@ export class Tab2Page implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.signaturePad = new SignaturePad(this.canvasEl.nativeElement, {
+      throttle: 0,
+      minDistance: 0,
+      velocityFilterWeight: 0.7,
+    });
     this.animation = this.animationCtrl
       .create()
       .addElement(this.iconSpin.nativeElement)
@@ -315,10 +364,6 @@ export class Tab2Page implements OnInit, AfterViewInit {
     // } else {
     //   this.columns[0].visible = false;
     // }
-  }
-
-  paginate(array: any[], page: number, pageSize: number) {
-    return array.slice(0, page * pageSize);
   }
 
   onSubmit(): void {
@@ -348,6 +393,22 @@ export class Tab2Page implements OnInit, AfterViewInit {
       //   },
       // });
     }, this.timeOut);
+  }
+
+  paginate(array: any[], page: number, pageSize: number) {
+    return array.slice(0, page * pageSize);
+  }
+
+  resizeCanvas() {
+    let ratio = Math.max(window.devicePixelRatio || 1, 1);
+
+    this.canvasEl.nativeElement.width =
+      this.canvasEl.nativeElement.offsetWidth * ratio;
+    this.canvasEl.nativeElement.height =
+      this.canvasEl.nativeElement.offsetHeight * ratio;
+    this.canvasEl.nativeElement.getContext('2d').scale(ratio, ratio);
+
+    this.signaturePad.clear();
   }
 
   setItems(event: any) {

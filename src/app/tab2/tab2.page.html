@@ -136,6 +136,45 @@
         [p-optional]="true"
         [p-options]="checkboxOptions"
       ></po-checkbox-group>
+      <po-switch
+        class="po-xl-4 po-lg-6 po-md-6 po-sm-12"
+        formControlName="switch"
+        name="switch"
+        [p-help]="form.get('switch')?.hasError('required') && form.get('switch')?.touched ? 'Failed Requirement' : 'Switch Button'"
+        p-label="Switch"
+        p-label-off="false"
+        p-label-on="true"
+        p-optional="true"
+      ></po-switch>
+      <div class="po-xl-12 po-lg-12 po-md-12 po-sm-12">
+        <span>
+          <span class="po-font-text-large-bold">Assine Aqui</span>
+          <span class="po-font-text">&nbsp;(Obrigatório)</span>
+        </span>
+        <br />
+        <canvas
+          #canvas
+          (touchstart)="drawStart($event)"
+          (touchmove)="drawMoved($event)"
+          width="400"
+          height="200"
+        ></canvas>
+        <br />
+        <div class="po-row">
+          <po-button
+            class="po-xl-6 po-lg-6 po-md-12 po-sm-12"
+            p-label="Apagar Assinatura"
+            [p-danger]="true"
+            (p-click)="drawClear()"
+          ></po-button>
+          <po-button
+            class="po-xl-6 po-lg-6 po-md-12 po-sm-12"
+            p-label="Salvar Assinatura"
+            p-kind="primary"
+            (p-click)="drawSave()"
+          ></po-button>
+        </div>
+      </div>
       <span style="height: 56px">&nbsp;</span>
     </form>
   </po-page-edit>
