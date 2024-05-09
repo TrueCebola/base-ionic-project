@@ -41,6 +41,7 @@ import {
 } from '@po-ui/ng-components';
 import * as darkReader from 'darkreader';
 import { ThemeService } from '../shared/services/theme.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-tabs',
@@ -125,10 +126,22 @@ export class TabsPage {
   public isLoading = false;
 
   ionViewWillEnter() {
-    if (this.storageService.getTheme() === 'dark') {
-      this.themeChange('escuro');
-    } else {
-      this.themeChange('claro');
+    let data: any = jwtDecode(window.sessionStorage.getItem('session')!);
+    if (data) {
+      let role = data.permissions.find(
+        (permission: any) => permission.app === 'App'
+      );
+      if (role) {
+        if (this.storageService.getTheme() === 'dark') {
+          this.themeChange('escuro');
+        } else {
+          this.themeChange('claro');
+        }
+        console.log('found');
+      } else {
+        console.log('not found');
+        this.router.navigate(['auth/sem-acesso']);
+      }
     }
   }
 

@@ -182,20 +182,33 @@ export class LoginPage implements OnInit {
           return;
         },
         complete: () => {
-          this.storageService.saveLocal({
-            username: CRYPT_USER,
-            password: CRYPT_PWD,
-            info: user_token,
-          });
           this.login.login = '';
           this.login.password = '';
           this.isLoading = false;
-          this.notification.success({
-            duration: 2000,
-            message: 'Login efetuado com sucesso!',
-          });
-          this.router.navigate(['tabs/tab1']);
-          return;
+          let data: any = jwtDecode(window.sessionStorage.getItem('session')!);
+          if (data) {
+            let role = data.permissions.find(
+              (permission: any) => permission.app === 'App'
+            );
+            if (role) {
+              this.storageService.saveLocal({
+                username: CRYPT_USER,
+                password: CRYPT_PWD,
+                info: user_token,
+              });
+              this.notification.success({
+                duration: 2000,
+                message: 'Login efetuado com sucesso!',
+              });
+              console.log('found');
+              this.router.navigate(['tabs/tab1']);
+              return;
+            } else {
+              this.storageService.setDenied(true);
+              console.log('not found');
+              this.router.navigate(['auth/sem-acesso']);
+            }
+          }
         },
       });
     } else {

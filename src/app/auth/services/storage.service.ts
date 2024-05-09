@@ -41,6 +41,14 @@ export class StorageService {
     return {};
   }
 
+  public isDenied(): boolean {
+    const DENIED = window.sessionStorage.getItem('denied-access');
+    if (DENIED) {
+      return true;
+    }
+    return false;
+  }
+
   public isExpired(): boolean {
     const EXPIRED = window.sessionStorage.getItem('expired-password');
     if (EXPIRED) {
@@ -114,6 +122,15 @@ export class StorageService {
     window.sessionStorage.removeItem('auth');
     window.sessionStorage.setItem(TOKEN, data.token);
     window.sessionStorage.setItem('auth', data.auth);
+  }
+
+  public setDenied(denied: boolean) {
+    if (denied) {
+      window.sessionStorage.setItem('denied-access', JSON.stringify(denied));
+      return;
+    }
+    window.sessionStorage.removeItem('denied-access');
+    return;
   }
 
   public setExpired(expired: boolean) {
